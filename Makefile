@@ -1,21 +1,30 @@
-all: 2d_dir 3d_dir test_dir
+all: 2d 3d test
 
-2d_dir:
+2d:
 	cd 2d; make
 
-3d_dir:
+3d:
 	cd 3d; make
 
-test_dir: 2d 3d
+test: 2d 3d
 	cd test; make
 
-python_dir: 2d 3d
+python: 2d 3d
 	cd python; make
+
+matlab: 2d 3d
+	cd matlab; make
+
+fortran: 2d 3d
+	cd fotran; make
 
 clean:
 	cd 2d; make clean
 	cd 3d; make clean
 	cd test; make clean
+	cd python; make clean
+	cd matlab; make clean
+	cd fotran; make clean
 
 tgz: fmmv.tgz
 
