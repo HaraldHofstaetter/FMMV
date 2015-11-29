@@ -1,7 +1,7 @@
 /* 
- * Copyright (c) 2006 Harald Hofstaetter
- * Institute for Analysis and Scientific Computing
- * Vienna University of Technology
+ * FMMV - the Fastest Multipole Method of Vienna
+ * Copyright (c) 2006-2015 Harald Hofstaetter
+ * http://www.harald-hofstaetter.at
  * 
  * This file is part of FMMV.
  * 
