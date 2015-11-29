@@ -1,0 +1,30 @@
+CC = gcc
+FC = gfortran
+LN = gcc
+
+LIBS =  -lpthread  -lm 
+TEST_LN_FLAGS = # -static
+
+LIBTOOL_COMPILE = glibtool --tag=CC --mode=compile $(CC)
+LIBTOOL_LINK = glibtool --tag=CC --mode=link $(LN) -g -O 
+LIBTOOL_INSTALL = glibtool --mode=install cp
+LIBTOOL_FINISH = glibtool --finish
+
+#Note: option -fno-strict-aliasing only necessary for GETBIT macro in build_tree_3d.c
+
+#ODIR = ODIR_GCC
+#CFLAGS =  -DUSE_PTHREADS -O3 -fno-strict-aliasing -march=nocona -msse2 -funroll-loops -fomit-frame-pointer -Wall
+#FFLAGS =  -O3 -fno-strict-aliasing -march=nocona -msse2 -funroll-loops -fomit-frame-pointer -Wall
+
+#ODIR = ODIR_GCC_O2
+#CFLAGS =  -DUSE_PTHREADS -O2 -fno-strict-aliasing -march=nocona -msse2 -funroll-loops -fomit-frame-pointer -Wall
+
+#ODIR = ODIR_LLVM_GCC
+#CFLAGS =  -DUSE_PTHREADS -O3 -fno-strict-aliasing -march=nocona -msse2 -funroll-loops -fomit-frame-pointer -Wall
+
+ODIR = ODIR_GCC_DEBUG
+CFLAGS = -DUSE_PTHREADS -g -march=nocona -Wall 
+
+NUMPY_INCLUDE = /System/Library/Frameworks/Python.framework/Versions/2.6/Extras/lib/python/numpy/core/include/numpy
+
+
