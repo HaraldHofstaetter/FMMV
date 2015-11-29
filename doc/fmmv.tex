@@ -1,0 +1,344 @@
+\documentclass[a4paper,12pt,twoside]{report}
+\newbox{\tempboxa}   % for temporary use
+\usepackage{amsfonts}
+\usepackage{multirow}
+\usepackage{moreverb}
+\usepackage{alltt}
+\usepackage{theorem}
+\usepackage{latexsym}
+%\usepackage{a4,ndv,headfoot}
+\usepackage{a4}
+\usepackage{graphicx,epsfig,psfrag}
+\usepackage{boxedminipage}
+\usepackage{array}
+\usepackage{makeidx}  % allows for indexgeneration
+\usepackage{paralist}
+\usepackage{natbib}
+%\usepackage{algmic1}
+%\usepackage{algm}
+\usepackage{wrapfig}
+
+%\usepackage{listings}
+%\lstset{language=C}
+
+\usepackage{amsmath}            % equation* environment
+
+%\input{ndvinit-english}        % Parameter init.s and command and environment
+                                % definitions
+%\input{defs}
+
+% **********************************************************************
+% *                             ZAHLEN                                 *
+% **********************************************************************
+
+\def\bbbr{{\rm I\!R}} %reelle Zahlen
+\def\bbbm{{\rm I\!M}}
+\def\bbbn{{\rm I\!N}} %natuerliche Zahlen
+\def\bbbf{{\rm I\!F}}
+\def\bbbh{{\rm I\!H}}
+\def\bbbk{{\rm I\!K}}
+\def\bbbp{{\rm I\!P}}
+\def\bbbc{{\mathchoice {\setbox0=\hbox{$\displaystyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\textstyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptstyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}
+{\setbox0=\hbox{$\scriptscriptstyle\rm C$}\hbox{\hbox
+to0pt{\kern0.4\wd0\vrule height0.9\ht0\hss}\box0}}}}
+
+% **********************************************************************
+% *                             SEITENLAYOUT                           *
+% **********************************************************************
+
+\setlength{\textwidth}{145mm}
+\setlength{\oddsidemargin}{8mm}
+\setlength{\evensidemargin}{8mm}
+\setlength{\topmargin}{0mm}
+\setlength{\topskip}{1mm}
+% \topskip darf nicht gleich 0mm gesetzt werden, sonst entstehen zwischen
+% Kapiteln zusaetzliche Seiten, die nur eine Kopfzeile enthalten!!!
+% Die Laengen \headsep und \topskip sind so gesetzt, dass der Abstand vom
+% oberen Rand der Kopfzeile zum oberen Rand des Fliesstextes 1 cm betraegt.
+% Dabei haengt \headsep von der Schriftgroesse ab, die in der Kopfzeile
+% verwendet wird.
+%\setlength{\textheight}{230mm}
+
+\renewcommand{\floatpagefraction}{.8}
+\renewcommand{\topfraction}{.95}
+\renewcommand{\textfraction}{.05}
+\renewcommand{\bottomfraction}{.5}
+
+%\leftmargini\parindent
+%\leftmarginii\parindent
+%\leftmarginiii\parindent
+%\leftmarginiv\parindent
+%\leftmarginv\parindent
+%\leftmarginvi\parindent
+
+%\newcommand{\comm}[1]{{\tt #1}}
+%\newcommand{\commFF}[1]{{\tt FF: #1}}
+%\newcommand{\commFF}[1]{}
+%&\newcommand{\comm}[1]{}
+
+% **********************************************************************
+% *                             KOPF- UND FUSSZEILEN                   *
+% **********************************************************************
+
+%\let\headersize=\small
+%\let\footersize=\small
+%\let\headerfont=\rm
+%\pagestyle{normalheadings}
+%\def\chapternumbering{\thechapter. \hskip 2pt}
+%\def\sectionnumbering{\thesection\ \hskip 2pt}
+%\pagefooter{}{}{}
+
+% pagelayout & header / footer
+\setlength{\parindent}{0pt} \setlength{\parskip}{5pt plus 2pt
+minus 1pt} \setlength{\textwidth}{145mm}
+\setlength{\oddsidemargin}{8mm} \setlength{\evensidemargin}{8mm}
+\setlength{\topmargin}{0mm} \setlength{\topskip}{1mm}
+\setlength{\fboxsep}{2mm}
+\renewcommand{\floatpagefraction}{.8}
+\renewcommand{\topfraction}{.95}
+\renewcommand{\textfraction}{.05}
+
+\setcounter{totalnumber}{8}
+\setcounter{topnumber}{8}
+\setcounter{bottomnumber}{8}
+
+\let\headersize=\small
+\let\footersize=\small
+\let\headerfont=\rm
+\def\chapternumbering{\thechapter. \hskip 2pt}
+\def\sectionnumbering{\thesection\ \hskip 2pt}
+%\pagefooter{}{}{}
+
+\bibpunct{[}{]}{,}{n}{}{,}
+\renewcommand{\bibname}{References}
+
+% **********************************************************************
+% *                             TABELLEN                               *
+% **********************************************************************
+
+% Length parameters and commands for the layout of tables
+\newlength{\ruler}
+\newlength{\ruleh}
+% \ruler = - <wanted vertical space between horizontal line and text>
+% \ruleh = <height of a capital letter in the actual font> - 2 \ruler
+\newcommand{\strutHline}%
+  {\setlength{\ruler}{-1.6ex}%
+   \setbox\tempboxa\hbox{A}\setlength{\ruleh}{\ht\tempboxa}%
+   \addtolength{\ruleh}{-2\ruler}\rule[\ruler]{0ex}{\ruleh}}
+%
+\newcommand{\strutNachHline}%
+  {\setbox\tempboxa\hbox{A}\setlength{\ruleh}{\ht\tempboxa}%
+   \addtolength{\ruleh}{1.6ex}\rule[0ex]{0ex}{\ruleh}}
+\newcommand{\strutVorHline}%
+  {\setlength{\ruler}{-1.6ex}\rule[\ruler]{0ex}{-\ruler}}
+
+\newcommand{\dash}{\kern 0mm -\hskip 0mm}
+
+{\theorembodyfont{\upshape} \newtheorem{algo}{Algorithm}[chapter]}
+
+% **********************************************************************
+% *                         MARGINAL NOTES                             *
+% **********************************************************************
+% Margin notes - use \notesfalse to turn off notes.
+\setlength{\marginparwidth}{0.6in}
+\reversemarginpar
+\newif\ifnotes
+\notestrue
+\newcommand{\longnote}[1]{
+  \ifnotes
+    {\medskip\noindent Note:\marginpar[\hfill$\Longrightarrow$]
+      {$\Longleftarrow$}{#1}\medskip}
+  \fi}
+\newcommand{\note}[1]{
+  \ifnotes
+    {\marginpar{\raggedright{\tiny #1}}}
+  \fi}
+
+% Hofi's commands:
+\newcommand{\rb}[1]{\raisebox{1.5ex}[-1.5ex]{#1}$~$}
+\renewcommand{\O}{\mathcal{O}}
+\newtheorem{lemma}{Lemma}%[section]
+%\newcommand{\fmmv}{{\sf Fmmv}}
+\newcommand{\fmmv}{{\sc Fmmv}}
+
+
+% **********************************************************************
+% *                         END DEFINITIONS                            *
+% **********************************************************************
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\pagestyle{empty}
+
+\begin{titlepage}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\begin{center}
+\vspace*{35mm} {\bf \Huge FMMV \\} 
+%\vspace*{25mm} {\bf \LARGE The Fastest Multipole Method of Vienna\\}
+\vspace*{13mm} {\bf \LARGE A Fully Vectorized Implementation \\of the Fast Multipole Method\\}
+
+\vspace*{13mm} {\bf \large Harald Hofst\"{a}tter \\}
+
+\vspace*{13mm} {\bf AURORA TR200?-??}
+
+\vspace*{13mm}
+        Institute for Analysis and Scientific Computing\\
+        Vienna University of Technology\\
+        Wiedner Hauptstrasse 8-10, A-1040 Wien, Austria \\
+\vspace*{3mm}
+        {E-Mail: \tt hofi@aurora.anum.tuwien.ac.at\\
+         }
+\end{center}
+\vspace*{1cm}
+\underline{\hspace{6cm}} \\
+{\footnotesize This work described in this report was supported by
+the Special Research Program SFB F011 ``AURORA'' of the Austrian
+Science Fund FWF.}
+
+\renewcommand{\thefootnote}{\arabic{footnote}}
+\end{titlepage}
+
+%\maketitle
+
+%\input fmmv_abstract.tex
+
+
+\setcounter{page}{3}
+%\pagestyle{normalheadings} \pagenumbering{arabic}
+
+%\tableofcontents
+
+%\chapter{Introduction}
+%\begin{verbatim}
+	%- History, Top 10 Algorithm, comparsion FFT<->FMM
+	%- general ideas for SIMD-vectorization: x1y1z1x2y3z2 -> x1x2y1y2z2z2
+	  %processors: Pentium (sse1, sse2), PowerPc (Altivec), etc.
+	%- only FMM for particle-particle interactions with coloumb-kernel
+	  %(many ideas should be applicable for other versions of FMM)
+	%- some words about possibilities for parallelization
+%\end{verbatim}
+%
+%\chapter{Overview of the Fast Multipole Method}
+%\begin{verbatim}
+	%- 'semi'-detailed, non-technical description of the FMM algorithm
+	%- concentration on ideas , e.g. low rank approximation, connections to H-matrices
+	%- mainly 2D-case (which is currently NOT implemented with the same
+		%level of sophistication as the more important 3D-case) 
+		%- mathematical theory for the various series expansions is MUCH simpler 
+		%- but the ideas are the same as in the 3D-case
+		%- graphical illustrations are easier and also clearer
+	%- hints to differences in the 3D-case
+	%- the detailed description of the 3D-FMM in the following sections
+%\end{verbatim}
+		%
+%\chapter{Data Structures}
+%\begin{verbatim}
+	%- Input: Points (optionally separate sources and targets),
+	       %charges, dipole moments
+	%- Output: potential, gradient (force)
+	%- Box3D
+	%- Build Tree:
+		%octtree
+		%radix sort 
+		%space filling curves
+		%Hilbert, Molton	
+	%- "IDA": SIMD (2-way and 4-way) copy sorted input into internal data
+		%arrangement better suited for vectorization	
+	%- generate neighbor relations 
+%\end{verbatim}
+	%
+%\chapter{Generic Fast Multipole Algorithm}
+%\begin{verbatim}
+	%- non adaptive
+	%- non adaptive with periodic boundary conditions
+	%- adaptive
+	%- adaptive with separate sources and targets
+	%- generate adaptive lists for adaptive fmm
+	%- high-level parallelization: far-/near- field
+%\end{verbatim}
+%
+%\chapter{Direct Evaluation of the Near Field}
+%\begin{verbatim}
+	%- charge/dipole sources
+	%- potential/gradient
+	%- utilize symmetries for sources=targets
+	%- approximate evaluation of invSqrt
+	%- vectorization
+%\end{verbatim}
+%
+%\chapter{Generating and Evaluating Series Expansions}
+%\begin{verbatim}
+	%- multipole and local (Taylor) expansions: 
+		%- redundancy (only one half of coefficients needed)
+		%- scaling to avoid underflow/overflow
+	%- technique for generating straighline code (see gen_straigtline_code.py) 
+	%- generate spherical harmonics (recursion formula)
+	%- gen_M (charge-sources and dipole-sources)
+	%- eval_L (potential, gradient)
+	%- analogous: gen_L, eval_M (needed for adaptive FMM, utilize
+	 	%symmetries for sources=targets)
+%\end{verbatim}
+%
+%\chapter{Translating Series Expansions:\\ M2M and L2L}
+%\begin{verbatim}
+	%- factorization of operators (complexity p^4 -> p^3)
+		%- Wigner Rotation matrices precomputed and hardcoded
+		 %(sophisticated recursion formulas for the efficient evaluation
+		  %of the coefficients are NOT necessary)
+		%- geometry: angle theta 
+	%- BLAS 2 -like routines: gemv, tpmv	  
+	%- utilize symmetries (child <-> diagonally opposite child)
+	%- vectorization: for each of the 4 (child, diagonally opposite child) 
+	  %pairs essentially the same operations have to be performed
+%\end{verbatim}
+%
+	%
+%\chapter{Converting Series Expansions: M2L}
+%\begin{verbatim}
+	%- exponential (plane wave) expansions
+	%- X2X:
+		%- diagonal
+		%- utilize symmetries (z <-> complex conjugate of z)
+		%- vectorization (separating real and imaginary parts)
+	%- M2X and X2L:		
+		%- analogue techniques as for M2M, L2L
+		%- FFT (tailor-made routines by SPIRAL)
+		%- vectorization
+		%- minimize memory usage (allocate storage for exponential
+		  %expansions on the fly, deallocate it as early as possible)
+%\end{verbatim}
+	%
+%\chapter{Numerical Experiments}
+%\begin{verbatim}
+	%- comparsions:
+		 %- vectorized <-> non-vectorized version
+		 %- other implementations
+		 %%- Hilbert <-> Molton order (time: no difference, memory: Molton
+		   %seems to be better)	
+	%- (automatical?) tuning of parameters :
+		%- no of levels (non-adaptive FMM, "fractional tiers"- idea)
+		%- split treshold (adaptive FMM)
+		%- direct eval treshold (adaptive FMM)
+%\end{verbatim}
+%
+
+\input{fmmv_appendix.tex}	
+
+%\bibliographystyle{aurora_mod}
+%\bibliography{fmm}
+\begin{thebibliography}{99}
+  \bibitem{periodic} M. Challacombe, C. A. White, M. Head-Gordon,
+    {\em Periodic boundary conditions and the fast multipole method},
+    J. Chem. Phys. {\bf 107}, 23 (1997), pp. 10131--10140.
+  \bibitem{fractional} C. A. White, M. Head-Gordon,
+    {\em Fractional tiers in fast multipole calculations},
+    Chem. Phys. Letters 257 (1996), pp. 647--650.
+
+\end{thebibliography}
+
+\end{document}

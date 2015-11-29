@@ -1,0 +1,1236 @@
+\appendix
+\chapter{FMMV User's Guide}
+This user's guide describes the invocation of the \fmmv\ library
+from user programs written in the programming languages C, Python,
+or {\sc Matlab}. Instructions for building and
+installing the library
+can be found in the file \verb|INSTALL| in the distribution directory.
+
+\fmmv\ provides routines  based on the Fast Multipole Method (FMM)
+for the rapid evaluation of the
+electrostatic (Coulomb)
+potential and the corresponding force field due to 
+three-dimensional distributions of charged particles and/or dipoles.
+%
+More precisely, there is a routine \verb|fmmvCoulomb3d| for the approximate evaluation of %the potential
+\begin{equation}\label{pot}
+	\phi(\mathbf{x}_i) = \sum_{j=1\atop j\neq i}^N
+	\left(
+	\frac{q_j}{\Vert\mathbf{x}_i-\mathbf{x}_j\Vert}
+	+\frac{\mathbf{m}_j\cdot(\mathbf{x}_i-\mathbf{x}_j)}
+	      {\Vert\mathbf{x}_i-\mathbf{x}_j\Vert^3}
+	\right)    
+	\quad\mbox{for $i=1,\dots,N$.}
+\end{equation}
+%at $\mathbf{x}_i$
+Here, $q_j$ and $\mathbf{m}_j$ denote respectively 
+the charge and dipole moment of the particle at $\mathbf{x}_j$.
+Optionally, \verb|fmmvCoulomb3d| also computes an approximation of
+the gradient
+\begin{equation}\label{grad}
+	\mbox{grad}\phi(\mathbf{x}_i),
+\end{equation}
+which (except for the sign) is the force field at $\mathbf{x}_i$ due to the potential $\phi$.
+
+In (\ref{pot}) it is assumed that the locations of the charges are also
+the locations where the potential is to be evaluated. In \fmmv\ the
+possibilities of optimization due to this
+additional symmetry %of this important special case for the applications 
+are fully exploited, but alternatively it is possible to specify an  
+independent array $\{\mathbf{y}_i\}$ of target locations where the potential shall be
+evaluated. In this case \verb|fmmvCoulomb3d| computes an approximation to
+\begin{equation}\label{pot_st}
+	\phi(\mathbf{y}_i) = \sum_{j=1}^{N_{\mathrm{sources}}}
+	\left(
+	\frac{q_j}{\Vert\mathbf{y}_i-\mathbf{x}_j\Vert}
+	+\frac{\mathbf{m}_j\cdot(\mathbf{y}_i-\mathbf{x}_j)}
+	      {\Vert\mathbf{y}_i-\mathbf{x}_j\Vert^3}
+	\right)      
+	\quad\mbox{for $i=1,\dots,N_{\mathrm{targets}}$.} 
+\end{equation}
+
+\section{Calling FMMV from C}\label{cinterface}
+\subsection{General Remarks}
+The C interface of \fmmv\ consists of the routines
+\begin{verbatim}
+    fmmvCoulomb3d
+    fmmvCoulomb3d_initialize
+    fmmvCoulomb3d_evaluate
+    fmmvCoulomb3d_finalize
+    fmmvCoulomb3df
+    fmmvCoulomb3df_initialize
+    fmmvCoulomb3df_evaluate
+    fmmvCoulomb3df_finalize
+\end{verbatim}
+where those routines with an additional '\verb|f|' are single precision
+versions of the corresponding double precision routines without
+the '\verb|f|'.
+Programs calling one of these routines should include the header file
+of \fmmv:
+\begin{verbatim}
+    #include<fmmv_coulomb3d.h>
+\end{verbatim}
+Such programs must be linked to the appropriate \fmmv\ library. On Unix-like
+systems this is achieved by adding \verb|-lfmmv_coulomb3d -lm| 
+(for double precision) or \verb|-lfmmv_coulomb3df -lm|
+(for single precision) at the end of the link command.
+
+In the sequel, we only describe the double precision routines.
+Unless stated otherwise, the corresponding single precision routines 
+behave exactly the same. Of course, for the single precision routines 
+each occurrence of
+the data type \verb|double| has to be replaced by \verb|float|.
+
+\subsubsection*{Thread Safety}
+All routines in \fmmv\ are thread-safe. This means it is safe to
+call routines in parallel from multiple threads. This holds because
+except for some precomputed arrays of coefficients which are modified only
+at the first invocation of the library, no global data is shared across
+internal subroutines of the library.
+In particular, the routines  \verb|fmmvCoulomb3df_initialize|,
+    \verb|fmmvCoulomb3df_evaluate|, and
+    \verb|fmmvCoulomb3df_finalize|, which by necessity have
+to share some data amongst them, do so by sharing only a handle, which has
+to be passed as an argument, see Section~\ref{in_ev_fi}. However, sharing
+the same handle across multiple threads is not  allowed.
+
+\subsubsection*{Error Handling}
+Generally, the routines of \fmmv\ are functions with a return value
+of type \verb|char*| (pointer to char).
+On success, they return a null pointer.
+On failure, they return a pointer to a string, containing a
+meaningful error message.
+It is strongly recommended, always to check this return value and 
+in case of failure to display the error message and abort the program.
+Note that this is {\em not} done by default.
+
+
+\subsection{{\tt fmmvCoulomb3d}}\label{allinone}
+The \fmmv\ library is most straightforwardly invoked from C code by calling 
+the routine \verb|fmmvCoulomb3d| (\verb|fmmvCoulomb3df| for single
+precision). This is the recommended way if for a given distribution of particles,
+the potential shall be evaluated only once
+for a fixed set of charges or dipole moments.
+For the case of several sets of charges, see Section~\ref{in_ev_fi}.
+\subsubsection*{Function Declaration} % of \tt fmmvCoulomb3d}
+\begin{verbatim}
+    char* fmmvCoulomb3d(
+        unsigned int NParticles, 
+        double particles[][3], 
+        double charges[],
+        double dipoleMoments[][3],
+        unsigned int NTargets, 
+        double targets[][3],
+        double pot[],      	
+        double grad[][3], 	
+        struct FmmvOptions *options, 
+        struct FmmvStatistics *statistics);
+\end{verbatim}
+
+\subsubsection*{Arguments}
+\begin{itemize}
+\item {\verb|NParticles|} is the number of particles or the number
+	of sources if independent targets are specified.
+\item {\verb|particles|} is a pointer to an array containing the coordinates 
+	of the particles. This means that the pointer \verb|particles|
+	points to a memory block large enough to contain at least
+	3*\verb|NParticles| elements of type \verb|double|. The arrangement
+	of the elements is assumed to be the obvious one:
+
+	\begin{tabular}{rl}\
+		0: & $x$-coordinate of particle \#0\\
+		1: & $y$-coordinate of particle \#0\\
+		2: & $z$-coordinate of particle \#0\\
+		3: & $x$-coordinate of particle \#1\\
+		\vdots & \\
+		\qquad
+		3*\verb|NParticles|-1: & $z$-coordinate of particle \#\verb|NParticles|$-1$ 
+	\end{tabular}	
+
+	The array \verb|particles| can be allocated either on the stack
+	using
+\begin{verbatim}
+    double particles[NParticles][3];
+\end{verbatim}
+	or on the heap using
+\begin{verbatim}
+    double (*particles)[3];
+    ...
+    particles = ((double(*))[3]) malloc(NParticles*3*sizeof(double));
+\end{verbatim}
+	The particular form of these declarations ensures that the 
+	$j$-th Cartesian coordinate of the $i$-th particle
+	($j\in\{0,1,2\}$, $i\in\{0,1,\dots$, \verb|NParticles|$-1\}$)
+	can conveniently be accessed to by
+	\verb|particles[|$i$\verb|][|$j$\verb|]|.\footnote{Note that in Fortran
+	the order would be the opposite way round: 
+	To get the same arrangement of elements, 
+	the array would have to be defined by 
+	
+	\medskip
+     \quad{\tt DOUBLE PRECISION PARTICLES(3, NPARTICLES)}
+	\medskip
+
+	\noindent The $j$-th coordinate  of the $i$-th particle is  
+	accessed by {\tt PARTICLES(}$j${\tt ,}$i${\tt )}, where
+	$j\in\{1,2,3\}$ and $i\in\{1,2,\dots$, {\tt NPARTICLES}$\}$.}
+
+	Analogous considerations apply to the arrays
+	\verb|dipoleMoments|, \verb|targets|, and \verb|grad|.
+\item {\verb|charges|} is a pointer to an array such that 
+	\verb|charges[|$i$\verb|]| is the charge of the $i$-th particle.
+\item {\verb|dipoleMoments|} is a pointer to an array such that 
+	\verb|dipoleMoments[|$i$\verb|][|$j$\verb|]| is the $j$-th Cartesian
+	 component of the dipole moment of the $i$-th particle.
+
+	At most one of the pointers \verb|charges| and 
+	\verb|dipoleMoments| may be a null pointer:
+	\begin{description}
+	\item[] \verb|dipoleMoments==0|: all particles are monopole sources, i.e. $\mathbf{m}_j=0$ for all
+	$j$ in (\ref{pot}) or (\ref{pot_st});
+	\item[] \verb|charges==0|: all particles are dipole sources, i.e. $q_j=0$ for all
+	$j$ in (\ref{pot}) or (\ref{pot_st}).
+	\end{description}
+\item {\verb|NTargets|} is the number of target locations. \verb|NTargets| is ignored if
+	\verb|targets| is a null pointer.
+\item {\verb|targets|} is a pointer to an array such that \verb|targets[|$i$\verb|][|$j$\verb|]| 
+	is the $j$-th Cartesian coordinate of the $i$-th target location, i.e. the location
+	where the potential (and optionally the gradient) shall be evaluated.
+
+	If \verb|targets| is a null pointer, then \verb|particles| is used for the target locations,
+	and an approximation to (\ref{pot}) instead of (\ref{pot_st}) is computed.
+\item {\verb|pot|} is a pointer to an array of size at least \verb|NTargets| (or  \verb|NParticles| if
+	\verb|targets| is a null pointer) elements of type \verb|double|.
+	Note that \verb|pot| must not be a null pointer.
+	After successful execution of \verb|fmmvCoulomb3d|, \verb|pot[|$i$\verb|]| contains
+	the potential at the $i$-th target location.
+\item {\verb|grad|} is a pointer to an array of size at least 3*\verb|NTargets| (or  3*\verb|NParticles| if
+	\verb|targets| is a null pointer) elements of type \verb|double|.
+	If \verb|grad| is a null pointer no gradients are computed. Otherwise, after successful execution of \verb|fmmvCoulomb3d|, \verb|grad[|$i$\verb|][|$j$\verb|]| contains the $j$-th Cartesian
+	 component of the gradient at the $i$-th target location.
+\item {\verb|options|} is a pointer to a \verb|FmmvOptions| structure for the fine-tuning
+	of the algorithm, see Section~\ref{options} below.
+	If \verb|options| is a null pointer default options are used.
+\item {\verb|statistics|} is a pointer to a \verb|FmmvStatistics| structure, cf. 
+	Section~\ref{statistics} below.
+	If \verb|statistics| is a null pointer no statistics are provided. Otherwise, \verb|statistics|
+	contains e.g. timing and memory usage information collected during the execution of the code.
+
+\end{itemize}
+\subsubsection*{Example of Usage}
+\begin{verbatim}
+    #include<stdio.h>    /* stderr, fprintf */
+    #include<stdlib.h>   /* exit */
+    #include<fmmv_coulomb3d.h>
+    ...
+    #define N_PARTICLES 10000
+    ...
+    {
+        char *error_message;
+        double particles[N_PARTICLES][3];
+        double charges[N_PARTICLES];
+        double pot[N_PARTICLES];
+        ...
+        /* some code for filling the arrays particles and charges */
+        ...
+        error_message = fmmvCoulomb3d(
+            N_PARTICLES, particles, charges,
+            0, 	   /* no dipoles */
+            0, 0,  /* no independent target locations */
+            pot,   
+            0,     /* don't compute gradient */		
+            0,     /* use default options */
+            0);    /* don't generate statistics */
+	
+        if (error_message) {
+            fprintf(stderr, "%s\n", error_message);
+            exit(1);
+        }	
+        ...
+    }
+\end{verbatim}
+
+\subsection{{\tt fmmvCoulomb3d\_initialize},
+{\tt fmmvCoulomb3d\_evaluate}, % and
+{\tt fmmvCoulomb3d\_finalize} }\label{in_ev_fi}
+Equation (\ref{pot}) (with $\mathbf{m}_j=0$ for simplicity) can be written as 
+\begin{equation}\label{yAx}
+	y=Ax,
+\end{equation}
+with the vector $x\in\mathbb{R}^{N}$ of charges $q_j$, the (symmetric) matrix $A\in\mathbb{R}^{N\times N}$ given by
+\begin{equation}
+	A_{ij} = \frac{1}{\Vert\mathbf{x}_i-\mathbf{x}_j\Vert},
+\end{equation}
+and the result vector $y\in\mathbb{R}^{N}$ of the potentials $\phi(\mathbf{x}_i)$.
+In many applications, however, the vector $y$ is given and the equation (\ref{yAx}) has to
+be solved for the vector $x$.
+This is usually done by some iterative method, in course of which many matrix-vector products of the form
+(\ref{yAx}) have to be computed.
+
+To handle such cases efficiently, \fmmv\
+provides separate routines for the three main steps---initialization, 
+evaluation, and finalization---of the algorithm:
+\begin{itemize}
+\item %The routine 
+\verb|fmmvCoulomb3d_initialize| performs in advance
+all initializations 
+(like building up data structures, precomputing coefficients, etc.) 
+depending only on the matrix $A$, i.e., on
+the geometric distribution of the particles $\mathbf{x}_i$.
+\item Subsequent calls to \verb|fmmvCoulomb3d_evaluate| evaluate (\ref{yAx}) for
+several vectors $x$ %of  charges $q_i$,
+without performing these initializations again.
+\item Finally, \verb|fmmvCoulomb3d_finalize| frees all resources  that have been
+allocated by
+ \verb|fmmvCoulomb3d_initialize|.
+\end{itemize}
+
+\subsubsection*{Function Declarations}
+\begin{verbatim}
+    char* fmmvCoulomb3d_initialize(
+        void** fmmvHandle,
+        unsigned int NParticles, 
+        double particles[][3], 
+        unsigned int NTargets, 
+        double targets[][3],
+        int typeSources,  
+        int computeGradient, 
+        struct FmmvOptions *options, 
+        struct FmmvStatistics *statistics); 
+
+    char* fmmvCoulomb3d_evaluate(
+        void* fmmvHandle,
+        double charges[],
+        double dipoleMoments[][3],
+        double pot[],      	
+        double grad[][3], 	
+        struct FmmvStatistics *statistics); 
+
+    char* fmmvCoulomb3d_finalize(
+        void* fmmvHandle,
+        struct FmmvStatistics *statistics); 
+        \end{verbatim}
+\subsubsection*{Arguments}
+\begin{itemize}
+	\item \verb|fmmvHandle| serves as a handle for the 
+	internal communication between the routines.
+	It is declared as a generic pointer (\verb|void*|) pointing
+	to some internal data structure hidden to the user.	
+	Note that \verb|fmmvHandle| is an output parameter
+	for \verb|fmmvCoulomb3d_initialize| (causing the data type
+	\verb|void**| in its declaration), whereas it is an
+	input parameter for the other routines.
+
+	\item \verb|NParticles|, \verb|particles|,
+	      \verb|NTargets|, \verb|targets|: These arguments specifying
+	      the distribution of the source and target locations have the 
+	      same meaning as for \verb|fmmvCoulomb3d|, cf. Section~\ref{allinone}.		       Note that these data have to be supplied only for 
+	      %the initialization routine 
+	      \verb|fmmvCoulomb3d_initialize|.\footnote{The arrays
+	      {\tt particles} and {\tt targets} are sorted
+	      by {\tt fmmvCoulomb3d\_initialize}, and {\tt fmmvCoulomb3d\_evaluate}
+	      can access to copies of these sorted arrays through {\tt fmmvHandle}.}
+	      Again, \verb|target| may be a null pointer, in which case the points
+	      in \verb|particles| are used for the target locations.
+	      
+	\item \verb|typeSources| denotes the kind of sources to be handled:
+	\begin{itemize}
+	\item[]\verb|typeSources==0|: only monopole charges;
+	\item[]\verb|typeSources==1|: only dipoles;
+	\item[]\verb|typeSources==2|: monopoles and dipoles.
+	\end{itemize}
+	Note that according to \verb|typeSource| the arguments
+	\verb|charges| and \verb|dipoleMoments| of \verb|fmmvCoulomb3d_evaluate|
+	may become mandatory, i.e., they must be pointers to 
+	appropriate arrays and may not be null pointers.
+	
+	\item \verb|computeGradient| indicates whether gradients shall be
+	computed. If  the quantity \verb|computeGradient| is non-zero, 
+	the argument \verb|grad| of \verb|fmmvCoulomb3d_evaluate| is mandatory
+	and must be a pointer to an appropriate output array.
+	
+	\item \verb|charges| and \verb|dipoleMoments| have the same meanings
+	as in the case of \verb|fmmvCoulomb3d|, cf. Section~\ref{allinone}. 
+	According to the value of the parameter \verb|typeSources| of
+	\verb|fmmvCoulomb3d_initialize|,
+	each of these arguments of \verb|fmmvCoulomb3d_evaluate| 
+	 is either mandatory or ignored. 
+	 
+	\item \verb|pot| and \verb|grad|: Cf. Section~\ref{allinone}. If
+	the parameter \verb|computeGradient| of \verb|fmmvCoulomb3d_initialize|
+	was zero, \verb|grad| is not used and may be a null pointer.
+	
+	\item \verb|options| and \verb|statistics|: Cf. Section~\ref{allinone}.	
+\end{itemize}
+
+\subsubsection*{Example of Usage}
+\begin{verbatim}
+    #include<stdio.h>    /* stderr, fprintf */
+    #include<stdlib.h>   /* exit */
+    #include<fmmv_coulomb3d.h>
+    ...
+    #define N_PARTICLES 10000
+    ...
+    {
+        void *fmmvHandle;
+        char *error_message;
+        double particles[N_PARTICLES][3];
+        double charges[N_PARTICLES];
+        double pot[N_PARTICLES];
+        ...
+        /* some code for filling the array particles */
+        ...
+        error_message = fmmvCoulomb3d_initialize(
+            &fmmvHandle, N_PARTICLES, particles,
+            0, 0,  /* no independent target locations */
+            0,     /* only monopoles */
+            0,     /* don't compute gradient */		
+            0,     /* use default options */
+            0);    /* don't generate statistics */
+
+        if (error_message) {
+            fprintf(stderr, "%s\n", error_message);
+            exit(1);
+        }	
+        ...
+        /* some code for filling the array charges */
+        ...
+        error_message = fmmvCoulomb3d_evaluate( 
+            fmmvHandle, charges, 0, pot, 0, 0);	
+	    
+        if (error_message) {
+            fprintf(stderr, "%s\n", error_message);
+            exit(1);
+        }	
+
+        error_message = fmmvCoulomb3d_finalize(
+            fmmvHandle, 0);
+	
+        if (error_message) {
+            fprintf(stderr, "%s\n", error_message);
+            exit(1);
+        }	
+        ...
+    }
+\end{verbatim}
+
+
+\subsection{Fine-Tuning of \fmmv}\label{options}
+For the fine-tuning of the algorithm 
+a pointer to an options structure with the following
+declaration may be supplied to the routines
+\verb|fmmvCoulomb3d| and \verb|fmmvCoulomb_initialize|:
+\begin{verbatim}
+    struct FmmvOptions {
+        int precision;           /* default 0 */
+        double scale;            /* default 1.0 */
+        int splitThreshold;       /* default depends on context */
+        int splitTargetThreshold; /* default depends on context */
+        int maxLevel;            /* default depends on context */
+        int maxTargetLevel;      /* default depends on context */
+        int directEvalThreshold;  /* default depends on context */
+        int periodicBoundaryConditions;  /* default 0 */
+        int useHilbertOrder;     /* default 0 */
+        int useApproxInvSqrt;    /* default 0 */
+        int useFarfieldNearfieldThreads; /* default 0 */
+        int PAPIeventSet;        /* default PAPI_NONE */
+    };
+\end{verbatim}
+A negative value for a field of this structure means that the 
+default value indicated in the corresponding comment  
+shall be taken.
+For convenience, \fmmv\ provides the routine 
+\begin{verbatim}
+    struct FmmvOptions fmmvGetDefaultOptions(void);
+\end{verbatim}
+which returns an options structure with all fields set to
+$-1$. This makes it easy to specify only 
+a subset of all possible options. 
+For example, in the following code segment
+only the options \verb|precision| 
+and \verb|periodicBoundaryConditions| are explicitly specified, all other options 
+are set to their default values: 
+\begin{verbatim}
+    ...
+    struct FmmvOptions options;
+    ...
+    options = fmmvGetDefaultOptions();
+    options.precision = 1;
+    options.periodicBoundaryConditions = 1;
+    ...
+\end{verbatim}    
+The available options, sorted by categories, are listed in the following.
+
+\subsubsection*{Options for Controlling Precision}
+\begin{itemize}
+   \item\verb|precision|
+%\end{itemize}
+
+The accuracy of %the version of 
+the fast multipole method
+implemented in \fmmv\ is determined by the parameters $p$
+(length of multipole expansions) and $s$ (order of a certain internally
+used quadrature formula, for details see Chapter~\ref{}).
+The value of \verb|precision| selects
+one of the three combinations of $p$ and $s$,
+which are currently implemented in \fmmv,
+according to the following table:
+\begin{center}\begin{tabular}{c|rrc}
+\verb|precision| &\quad $p$ & $s$ & $\varepsilon$ \\
+\hline
+0 &  6 & 8 & $10^{-3}$ \\ 
+1 & 16 & 17 & $10^{-6}$ \\ 
+2 & 23 & 26 & $10^{-9}$  
+\end{tabular}\end{center}
+Here $\varepsilon$ is approximately the expected accuracy. 
+\verb|precision==2| is not implemented
+%in \fmmv\ 
+for single precision, because 
+when calculations are carried out in
+single precision, no accuracy higher than $\varepsilon=10^{-6}$ can be expected.
+
+   \item\verb|useApproxInvSqrt|
+
+The value of \verb|precision| affects only the accuracy of the
+calculation of far field interactions. 
+Interactions in the near field are directly calculated by (\ref{pot}) 
+or (\ref{pot_st}) using an implementation
+of the function $x\mapsto1/\sqrt{x}$, which calculates
+its result to full floating-point precision.
+Some processors however, like,  e.g., Pentium processors with SSE extensions or 
+PowerPC processors with AltiVec extensions, provide approximations
+to $x\mapsto1/\sqrt{x}$ in hardware, 
+which---if available---can be utilized in \fmmv\ by setting
+\verb|useApproxInvSqrt| to a value $\geq 1$. 
+Such approximations  %to $x\mapsto1/\sqrt{x}$
+are currently available only in single precision.
+Their utilization leads to a significant decrease of the run time,
+but their accuracy is compatible with \verb|precision==0| only, i.e.,
+$\varepsilon=10^{-3}$.
+\end{itemize}
+ 
+
+\subsubsection*{Options for Controlling the Oct-Tree Data Structure}
+\begin{itemize}
+   \item\verb|splitThreshold|
+   \item\verb|maxLevel|
+   \item\verb|splitTargetThreshold|
+   \item\verb|maxTargetLevel |
+   \smallskip
+
+\verb|splitThreshold==0| requires the oct-tree data structure to be
+built according to the 
+{\em non-adaptive FMM.} Boxes are recursively divided into eight child boxes 
+until \verb|maxLevel| levels of boxes have been obtained.
+Leaf boxes occur only at the highest (finest) level.
+For the non-adaptive FMM the values of \verb|splitTargetThreshold|
+and \verb|maxTargetLevel| are ignored, even if independent target
+locations are specified.
+
+\verb|splitThreshold>0| requires the oct-tree data structure to be
+built according to the 
+{\em adaptive FMM.} Boxes that are not already in level 
+\verb|maxLevel| 
+are recursively divided into eight child boxes 
+as long as they contain more than \verb|splitThreshold| particles.
+Leaf boxes may occur at all levels.
+If independent target locations are specified, the options 
+\verb|splitThreshold| and \verb|maxLevel| only apply to the
+assignment of sources to source boxes.
+Assignment of targets to target boxes is controlled 
+analogously by the
+options \verb|splitTargetThreshold| and \verb|maxTargetLevel|.
+
+It should be mentioned that for \verb|splitThreshold==0| and
+\verb|maxLevel==0| the FMM is not involved at all, 
+all interactions are computed directly.
+This may be important for comparison purposes, because for
+this direct algorithm the same highly optimized routines of \fmmv\ are
+used. Usually, not much effort is spent on the optimization
+of the direct algorithm, which makes the comparison with the FMM 
+somewhat unfair.
+
+\item\verb|useHilbertOrder|
+
+While building the oct-tree data structure, 
+all particles are sorted
+in such a way that for each box the particles belonging 
+to this box are contiguously stored in memory.
+By default, this goal is achieved by sorting the particles according
+to  standard {\em Molton order}, cf. Chapter~\ref{}.
+
+Alternatively, setting \verb|useHilbertOrder|  to a value
+$\geq 1$ requires  the particles to be sorted along a {\em Hilbert space filling
+curve}, which often leads to better performance due
+to improved cache utilization. 
+
+   \item\verb|scale|
+
+   Before building the oct-tree data structure, all particles are scaled
+   to fit into  $[0,1]^3$, i.e., the unit cube.\footnote{Actually the 
+   particles are scaled to fit into the cube $[1/2,1]^3$, which
+   offers some technical advantages, see Chapter~\ref{}.}
+   An additional scaling factor $\in (1/2,1]$
+   may be specified via \verb|scale|.
+   For the non-adaptive FMM this has the effect, that for a given
+   number of levels, less leaf boxes are generated 
+   and accordingly more particles belong to each leaf box.
+   Bearing in mind that for uniform particle distributions
+   the average number of particles per leaf box
+   is an essential parameter to be optimized, this 
+   additional scaling allows 
+   much finer control of this parameter than by controlling it 
+   only by means of the number of levels. 
+   More information on this idea can be found in \cite{fractional}.
+   
+   
+\end{itemize}
+
+\subsubsection*{Far Field/Near Field Parallelism}
+\begin{itemize}
+    \item\verb|useFarfieldNearfieldThreads|
+
+    By the very nature of the FMM, the two steps
+    \begin{itemize}
+    \item calculating all far field interactions and
+    \item calculating all near field interactions 
+    \end{itemize}
+    are essentially mutually independent. Thus, the
+    order in which they are performed does not matter,
+    they can even be performed in parallel.
+    As experience shows, balancing computing time among these
+    two steps often minimizes the total computing time. Consequently,
+    doing these steps in parallel seems even more desirable.
+    In \fmmv\ this parallelism is implemented using POSIX threads,
+    and is enabled by setting \verb|useFarfieldNearfieldThreads|
+    to a value $\geq 1$.
+    Of course, this only makes sense if more than one processor 
+    (or a dual core processor) is available.
+    
+    
+\end{itemize}
+
+\subsubsection*{Periodic Boundary Conditions}
+\begin{itemize}
+    \item\verb|periodicBoundaryConditions|
+
+\fmmv\ supports the use of periodic boundary conditions. 
+If \verb|periodicBoundaryConditions| is set to a value
+$\geq 1$, the appropriate routines of \fmmv\ compute
+an approximation to
+\begin{equation}\label{pot_periodic}
+	\phi(\mathbf{x}_i) = 
+	\sum_{\mathbf{n}\in\mathbb{Z}^3}
+	\sum_{j=1\atop \mbox{\tiny$j\neq i$ for $\mathbf{n}=0$}}^N
+	\left(
+	\frac{q_j}{\Vert\mathbf{x}_i-\mathbf{x}_j-\mathbf{n}\Vert}
+	+\frac{\mathbf{m}_j\cdot(\mathbf{x}_i-\mathbf{x}_j-\mathbf{n})}
+	      {\Vert\mathbf{x}_i-\mathbf{x}_j-\mathbf{n}\Vert^3}
+	\right)
+\end{equation}	
+for $i=1,\dots,N$, instead of an approximation to (\ref{pot}).
+This means that all given charges in the basic box (unit cube) are replicated
+periodically to all boxes obtained by translation of the basic box due
+to all possible vectors $\mathbf{n}\in\mathbb{Z}^3$.
+Note that the outer sum in (\ref{pot_periodic})  is only
+conditionally convergent. Consequently,
+some convention about the order of summation is
+necessary. This is explained in more detail in Section~\ref{}, see also
+\cite{periodic}.
+
+\end{itemize}
+
+\subsubsection*{Counting Events Using PAPI}
+\begin{itemize}
+    \item\verb|PAPIeventSet|
+
+    The PAPI library\footnote{PAPI is available at
+    {\tt http://icl.cs.utk.edu/papi/}.}
+    provides a standard interface 
+    for accessing hardware performance counters available 
+    on most modern microprocessors.
+    If \fmmv\ has been compiled with PAPI support enabled
+    ( , 
+    A
+    \begin{verbatim}
+    struct FmmvOptions options = fmmvGetDefaultOptions();
+    ...
+    PAPI_library_init(PAPI_VER_CURRENT);
+    options.PAPIeventSet = PAPI_NULL;
+    PAPI_create_eventset(&options.PAPIeventSet);
+    ...
+    PAPI_add_event(options.PAPIeventSet, PAPI_TOT_INS);
+    ...
+    \end{verbatim}
+The functions of the PAPI library have  return values indicating the
+success of the respective operations. These have been ignored
+in the above code segment for simplicity. This, of course, is not
+recommended for actual usage of the PAPI library.
+\end{itemize}
+
+
+
+\subsection{Statistics}\label{statistics}
+If a pointer to a statistics structure whose
+declaration is given below, is supplied to the
+routines of \fmmv\, timing and memory usage information
+is collected during the execution of the code.
+This information can conveniently be printed
+in readable form
+to standard output by  calling the routine
+\begin{verbatim}  
+    void printFmmvStatistics(struct FmmvStatistics *statistics);
+\end{verbatim}
+The declaration of the statistics 
+structure \verb|FmmvStatistics| is as follows:
+\begin{verbatim}
+    #define STAT_MAX 20
+    #define MAX_NUM_PAPI_EVENTS 10
+
+    struct FmmvStatistics {
+        double time[STAT_MAX];
+        double etime[STAT_MAX];
+
+        int PAPIeventSet;
+        long long int PAPIvalues[STAT_MAX][MAX_NUM_PAPI_EVENTS];
+
+        unsigned int maxAllocatedMemory;
+
+        int p;
+        int s;
+
+        int noOfParticles;
+        int noOfTargets;
+        int noOfSourceLevels;
+        int noOfTargetLevels;
+
+        int noOfSourceBoxes;
+        int noOfTargetBoxes;
+        int noOfSourceLeafBoxes;
+        int noOfTargetLeafBoxes;
+        float averageNoOfParticlesPerLeafBox;
+        float averageNoOfTargetsPerLeafBox;
+    
+        int noOfParticlesInLevel[52];
+        int noOfTargetsInLevel[52];
+        int noOfSourceBoxesInLevel[52];
+        int noOfTargetBoxesInLevel[52];
+        int noOfSourceLeafBoxesInLevel[52];
+        int noOfTargetLeafBoxesInLevel[52];
+        float averageNoOfParticlesPerLeafBoxInLevel[52];
+        float averageNoOfTargetsPerLeafBoxInLevel[52];
+    };
+\end{verbatim}
+The meaning of most of the fields should be self-explanatory, so only
+some of them are described in the following.
+\begin{itemize}
+  \item \verb|p| and \verb|s| are the  values used for the parameters 
+  mentioned in Section~\ref{options}, which determine the accuracy of
+  the FMM.
+  \item \verb|maxAllocatedMemory| is the maximum size of memory in bytes,
+  allocated during the execution of the code. This value
+  is determined by keeping track to each call of the system routines
+  \verb|malloc| and \verb|free| (or to similar routines supporting
+  aligned memory allocation).
+  This also allows an internal check, whether the entire 
+  allocated memory has been properly deallocated.
+
+  \item \verb|time| and \verb|etime|:
+  These arrays provide timing information
+  itemized to substeps of the FMM algorithm.
+  The timing in \verb|time| (processor time) is
+  obtained via the system routine \verb|clock|,
+  whereas the value provided in \verb|etime| (elapsed time)
+  is obtained via the system routine \verb|gettimeofday|.
+  The available steps are given by the following 
+  enum constants, such that, e.g., \verb|time[STAT_M2M]| gives
+  the timing of the M2M substep of the FMM:
+\begin{verbatim}
+    enum StatStep {
+        STAT_TOTAL,
+        STAT_BUILD_TREE, 
+        STAT_GEN_M,
+        STAT_M2M, 
+        STAT_M2L, 
+        STAT_L2L,
+        STAT_EVAL_L,
+        STAT_LIST1, 
+        STAT_LIST3, 
+        STAT_LIST4, 
+        STAT_LIST34,
+        STAT_FARFIELD, 
+        STAT_NEARFIELD,
+        STAT_INITIALIZE,
+        STAT_EVALUATE,
+        STAT_FINALIZE,
+        _STAT_LAST_ /* mark last entry, do not remove! */	
+    };
+\end{verbatim}
+  If some substep is not applicable, the corresponding values are set
+  to $-1$.
+  \item \verb|PAPIvalues|:
+\end{itemize}  
+
+\section{Calling FMMV from Python}\label{pythoninterface}
+\subsection{General Remarks}
+\fmmv\ provides an interface for the programming language
+Python with similar functionality as the C interface, 
+cf. Section~\ref{cinterface}.
+The interface depends on the package \verb|numarray|\footnote{{\tt numarray}
+is available at {\tt http://www.stsci.edu/resources/software\_hardware/numarray}.},
+which
+adds efficient array manipulation capabilities to the Python programming
+language.
+Python programs calling one of the double precision
+routines of \fmmv\ must import
+the modules \verb|numarray| and \verb|fmmv|:
+\begin{verbatim}
+    from numarray import *
+    from fmmv import *
+\end{verbatim}
+For single precision, the module \verb|fmmvf| has to be imported instead
+of \verb|fmmv|:
+\begin{verbatim}
+    from numarray import *
+    from fmmvf import *
+\end{verbatim}
+In either case, this gives access to the routines
+\begin{verbatim}
+    coulomb3d
+    coulomb3d_initilize
+    coulomb3d_evaluate
+    coulomb3d_finalize
+\end{verbatim}
+which calculate in double or single precision, depending on whether they 
+were imported via \verb|fmmv| or \verb|fmmvf|.
+\subsubsection*{Error Handling}
+In case of error the routines of the modules \verb|fmmv|
+and \verb|fmmvf|
+throw an exception, 
+which---if not caught by an exception handler---causes 
+the calling program to abort after printing an error message.
+
+\subsection{{\tt coulomb3d}}\label{python_coulomb3d}
+The most basic usage of \verb|coulomb3d| looks like
+\begin{verbatim}
+    pot = coulomb3d(particles, charges)
+\end{verbatim}
+Here,  {\tt particles} and {\tt charges} are {\tt numarray} arrays containing 
+the coordinates of the particles and the corresponding charges, respectively.
+They are generated by, e.g.,\footnote{Notice the order of the dimensions
+{\tt(NParticles, 3)} in the definition of {\tt particles} (and similarly for
+{\tt dipoleMoments}).
+This resembles the fact that in
+Python %together with the package \verb|numarray| 
+arrays are stored {\em row-wise}.
+The $j$-th coordinate of the $i$-th particle is accessed by
+{\tt particles[}$i${\tt ,}$j${\tt ]}, 
+where $j\in\{0,1,2\}$ and $i\in\{0,\dots, $ {\tt nparticles}$-1\}$.
+}
+\begin{verbatim}
+    particles = zeros((NParticles, 3), type=Float64)
+    charges = zeros(NParticles, type=Float64)
+\end{verbatim}
+where \verb|NParticles| denotes the number of particles, and \verb|type|
+indicates the type of arrays to be generated (\verb|Float32| for single
+and \verb|Float64| for double precision), and have then to be filled with
+their intended values by some Python code.  
+
+After successful execution of \verb|coulomb3d|, \verb|pot| is 
+%a \verb|numarray| 
+an array containing an approximation to the potential (\ref{pot}) without
+dipole sources, i.e., $\mathbf{m}_i=0$.
+
+\subsubsection*{Dipole Sources}
+The usage of \verb|coulomb3d| for 
+dipole sources, whose dipole moments are supplied by the array
+\verb|dipoleMoments|, 
+looks like
+\begin{verbatim}
+    pot = coulomb3d(particles, dipoleMoments=dipoleMoments)
+\end{verbatim}
+or
+\begin{verbatim}
+    pot = coulomb3d(particles, charges, dipoleMoments=dipoleMoments)
+\end{verbatim}
+where in the latter case the particles also carry monopole charges.
+\subsubsection*{Computing Gradients}
+The additional argument \verb|computeGradient=True| requires
+\verb|coulomb3d| to compute  approximations to the gradients
+(\ref{grad}):
+\begin{verbatim}
+    (pot, grad) = coulomb3d(..., computeGradient=True)
+\end{verbatim}
+Here and in the following the dots indicate further required 
+arguments, e.g., the ones described above.
+\subsubsection*{Independent Target Locations}
+If the potential and optionally  the gradient shall be computed
+at independent target locations, the Cartesian coordinates of these locations 
+have to be supplied by an appropriate array \verb|targets|:
+\begin{verbatim}
+    pot = coulomb3d(..., targets=targets)
+\end{verbatim}
+or
+\begin{verbatim}
+    (pot, grad) = coulomb3d(..., targets=targets, computeGradient=True)
+\end{verbatim}
+\subsubsection*{Further Options}
+    For the fine-tuning of the algorithm \verb|coulomb3d| supports
+    the following options, whose meanings are exactly the same as  for
+    the corresponding options of the C interface of \fmmv\ described in Section~\ref{options}:
+\begin{verbatim}
+    precision
+    useApproxInvSqrt
+    splitThreshold
+    maxLevel
+    splitTargetThreshold
+    maxTargetLevel
+    useHilbertOrder
+    scale
+    useFarfieldNearfieldThreads
+    periodicBoundaryConditions
+\end{verbatim}
+Options are set according to the scheme
+\begin{verbatim}
+    fmmvHandle = coulomb3d(..., option1=value1, option2=value2,...)
+\end{verbatim}
+For missing options, or for options explicitly set to the value \verb|None|, default values 
+as described in Section~\ref{options} 
+are taken.
+\subsubsection*{Statistics}
+The additional argument \verb|getStatistics=True| requires
+\verb|coulomb3d| to collect timing and memory usage information:
+\begin{verbatim}
+    (pot, stat) = coulomb3d(..., getStatistics=True)
+\end{verbatim}
+or
+\begin{verbatim}
+    (pot, grad, stat) = coulomb3d(..., computeGradient=True, getStatistics=True)
+\end{verbatim}
+Here, the output parameter \verb|stat| is a dictionary with the following strings as keys:
+\begin{verbatim}
+    "p"
+    "s"
+    "maxAllocatedMemory"
+    "noOfParticles"
+    "noOfTargets"
+    "noOfSourceLevels"
+    "noOfTargetLevels"
+    "noOfSourceBoxes"
+    "noOfTargetBoxes"
+    "noOfSourceLeafBoxes"
+    "noOfTargetLeafBoxes"
+    "averageNoOfParticlesPerLeafBox"
+    "averageNoOfTargetsPerLeafBox"
+    "noOfParticlesInLevel"
+    "noOfTargetsInLevel"
+    "noOfSourceBoxesInLevel"
+    "noOfTargetBoxesInLevel"
+    "noOfSourceLeafBoxesInLevel"
+    "noOfTargetLeafBoxesInLevel"
+    "averageNoOfParticlesPerLeafBoxInLevel"
+    "averageNoOfTargetsPerLeafBoxInLevel"
+    "totalTime"
+    "buildTreeTime"
+    "genMTime"
+    "M2MTime"
+    "M2LTime"
+    "L2LTime"
+    "evalLTime"
+    "list1Time"
+    "list3Time"
+    "list4Time"
+    "list34Time"
+    "farfieldTime"
+    "nearfieldTime"
+    "initializeTime"
+    "evaluateTime"
+    "finalizeTime"
+\end{verbatim}
+The meanings of the keys are self-explanatory or explained
+in Section~\ref{statistics}. Keys ending with \verb|"Time"|
+provide the running times of the corresponding substeps of the 
+FMM obtained via the system routine \verb|gettimeofday|, or
+are missing in the dictionary \verb|stat| if the corresponding
+substeps are not applicable.
+For example, \verb|stat["M2MTime"]| gives the running time
+of the M2M substep of the FMM, and
+\verb|stat["noOfSourceBoxesInLevel"][3]| gives the
+number of source boxes in level~3 of the oct-tree data structure.
+    
+\subsection{{\tt coulomb3d\_initialize}, 
+{\tt coulomb3d\_evaluate},\\
+{\tt coulomb3d\_finalize}}
+Analogously to the C interface described in Section~\ref{in_ev_fi},
+the Python interface of  \fmmv\ provides separate routines
+\begin{verbatim}
+    coulomb3d_initialize
+    coulomb3d_evaluate
+    coulomb3d_finalize
+\end{verbatim}
+for the three main steps---initialization, evaluation, and finalization---of the algorithm.  
+Now, the basic usage looks like
+\begin{verbatim}
+    fmmvHandle = coulomb3d_initialize(particles)
+    ...
+    pot = coulomb3d_evaluate(fmmvHandle, charges)
+    ...
+    coulomb3d_finalize(fmmvHandle)
+\end{verbatim}
+The usage is similar to the usage of \verb|coulomb3d| (cf. Section~\ref{python_coulomb3d}), but
+with the arguments 
+appropriately distributed among the routines \verb|coulomb3d_initialize| and
+\verb|coulomb3d_evaluate|, and with a handle \verb|fmmvHandle| serving for
+the internal communication between the routines.
+\subsubsection*{Dipole Sources}
+The kind of sources to be handled can be determined by the argument 
+\verb|typeSources| of \verb|coulomb3d_initialize|:
+\begin{itemize}
+	\item \verb|typeSources=0| for monopole charges only. As shown above, 
+	this does not have to be explicitly specified.
+	\item \verb|typeSources=1| for dipole charges only:
+\begin{verbatim}
+    fmmvHandle = coulomb3d_initialize(particles, typeSources=1)
+    ...
+    pot = coulomb3d_evaluate(fmmvHandle, dipoleMoments=dipoleMoments)
+    ...
+\end{verbatim}
+	\item \verb|typeSources=2| for monopole and dipole charges:
+\begin{verbatim}
+    fmmvHandle = coulomb3d_initialize(particles, typeSources=2)
+    ...
+    pot = coulomb3d_evaluate(fmmvHandle, charges, dipoleMoments=dipoleMoments)
+    ...
+\end{verbatim}
+\end{itemize}
+In the latter two cases the argument \verb|dipoleMoments| of \verb|coulomb3d_evaluate|
+is of course mandatory.
+\subsubsection*{Computing Gradients}
+The argument \verb|computeGradient=True| of \verb|coulomb3d_initialize| requires
+\verb|coulomb3d_evaluate| to compute approximations to the gradients (\ref{grad}):
+\begin{verbatim}
+    fmmvHandle = coulomb3d_initialize(..., computeGradient=True)
+    ...
+    (pot, grad) = coulomb3d_evaluate(fmmvHandle, ...)
+    ...
+\end{verbatim}
+\subsubsection*{Independent Target Locations}
+Independent target locations supplied to \verb|coulomb3d_initialize|,
+\begin{verbatim}
+    fmmvHandle = coulomb3d_initialize(..., targets=targets)
+\end{verbatim}
+cause subsequent calls of \verb|coulomb3d_evaluate| to calculate their results
+at these given locations.
+\subsubsection*{Further Options}
+Options can be set at time of initialization only:
+\begin{verbatim}
+    fmmvHandle = coulomb3d_initialize(..., option1=value1, option2=value2,...)
+\end{verbatim}
+These options then also apply to subsequent calls of \verb|coulomb3d_evaluate|.
+\subsubsection*{Statistics}
+If \verb|getStatistics=True| is specified for \verb|coulomb3d_initialize|,
+then timing and memory usage information is collected during execution of
+{\em all} of the three steps initialization, evaluation, and finalization:
+\begin{verbatim}
+    (fmmvHandle, stat) = coulomb3d(..., getStatistics=True)
+    ...
+    (pot, stat) = coulomb3d_evaluate(fmmvHandle, ...) 
+    # or possibly (pot, grad, stat) = ...
+    ...
+    stat = coulomb3d_finalize(fmmvHandle, ...)
+\end{verbatim}
+
+\section{Calling FMMV from MATLAB}
+\subsection{General Remarks}
+\fmmv\ provides an interface for easy access of the library from within {\sc Matlab}.
+This interface has been modeled after the Python interface described 
+in Section~\ref{pythoninterface} as far as it is
+possible and compatible with the
+conventions used in {\sc Matlab}.
+Consequently, also the documentation of the {\sc Matlab} interface given in this
+section follows closely Section~\ref{pythoninterface}.
+
+Currently the {\sc Matlab} interface of \fmmv\ provides only routines using
+double precision, which are the following:
+\begin{verbatim}
+    fmmvcoulomb3d
+    fmmvcoulomb3d_initialize
+    fmmvcoulomb3d_evaluate
+    fmmvcoulomb3d_finalize
+\end{verbatim}
+These routines are readily available as soon as their corresponding program
+files (shared libraries) are located in some directory on the {\sc Matlab} path.
+No explicit initialization of the library 
+like importing some modules is necessary.
+\subsubsection*{Error Handling}
+In case of error the routines of the {\sc Matlab} interface of \fmmv\
+throw an exception, 
+which---if not caught by an exception handler---
+causes the calling program to stop execution after printing an error message.
+
+
+\subsection{\tt fmmvcoulomb3d}
+The basic usage of \verb|fmmvcoulomb3d| is
+\begin{verbatim}
+    pot = fmmvcoulomb3d(particles, charges)
+\end{verbatim}
+where the arrays \verb|particles| and \verb|charges| 
+contain the coordinates of
+the particles and the corresponding charges, respectively.
+These arrays are generated by, e.g.,
+\begin{verbatim}
+    particles = zeros(3, nparticles)
+    charges = zeros(1, nparticles)
+\end{verbatim}
+where \verb|nparticles| denotes the number of particles.\footnote{Notice
+the order of
+the dimensions of the array {\tt particles}, which resembles the
+fact that in {\sc Matlab} arrays are stored {\em column-wise}.
+The $j$-th coordinate of the $i$-th particle is accessed by
+{\tt particles(}$j${\tt ,}$i${\tt )},
+where $j\in\{1,2,3\}$ and $i\in\{1,\dots, $ {\tt nparticles}$\}$.
+}
+
+\subsubsection*{Dipole Sources}
+For dipole sources with dipole moments
+given by the array \verb|dipoleMoments|
+the usage of \verb|fmmvcoulomb3d| is
+\begin{verbatim}
+    pot = fmmvcoulomb3d(particles, [], dipoleMoments)
+\end{verbatim}
+or
+\begin{verbatim}
+    pot = fmmvcoulomb3d(particles, charges, dipoleMoments)
+\end{verbatim}
+where in the first case the empty matrix \verb|[]| serves as a placeholder
+for the absent monopole charges,
+and in the latter case the particles also carry monopole charges.
+\subsubsection*{Computing Gradients}
+Gradients are computed, if a second output parameter \verb|grad| 
+is supplied to the call of the routine \verb|fmmvcoulomb3d|:
+\begin{verbatim}
+    [pot, grad] = fmmvcoulomb3d(...)
+\end{verbatim}
+\subsubsection*{Independent Target Locations}
+Independent target locations can be supplied by a fourth argument
+\verb|targets|:
+\begin{verbatim}
+    pot = fmmvcoulomb3d(particles, charges, dipolemoments, targets)
+\end{verbatim}
+or
+\begin{verbatim}
+    [pot, grad] = fmmvcoulomb3d(particles, charges, dipolemoments, targets)
+\end{verbatim}
+Here the potentials and gradients are computed at the locations
+given by the array \verb|targets|, not at those locations given by 
+the array \verb|particles|.
+\subsubsection*{Further Options}
+For the fine-tuning of the algorithm, an options structure can be supplied
+to \verb|fmmvcoulomb3d| as a fifth argument:
+\begin{verbatim}
+    [pot, grad] = fmmvcoulomb3d(particles, charges, dipolemoments, targets, options)
+\end{verbatim}
+For the creation of such options structures \fmmv\ provides
+the {\sc Matlab} function \verb|fmmvset| with the following syntax:\footnote{This
+method of handling options is modeled after the one used by the ODE solvers of
+{\sc Matlab}.}
+\begin{verbatim}
+    options = fmmvset('option1', value1, 'option2', value2, ...)
+\end{verbatim}
+Here \verb|option1|, \verb|option2|,\dots must be one of the following options,
+whose meanings are exactly the same as for the corresponding options of
+the C interface of \fmmv\ described in Section~\ref{options}:
+\begin{verbatim}
+    precision
+    useApproxInvSqrt
+    splitThreshold
+    maxLevel
+    splitTargetThreshold
+    maxTargetLevel
+    useHilbertOrder
+    scale
+    useFarfieldNearfieldThreads
+    periodicBoundaryConditions
+    printStatistics
+\end{verbatim}
+Any unspecified options have default values as described in Section~\ref{options}.
+\subsubsection*{Statistics}
+One of the options described above is \verb|printStatistics|. If this is set
+to a non-zero value, timing and memory usage information collected during
+the execution of the code is printed in readable form to standard output.
+\subsection{{\tt fmmvcoulomb3d\_initialize}, 
+{\tt fmmvcoulomb3d\_evaluate},\\
+{\tt fmmvcoulomb3d\_finalize}}
+Analogously to the C interface described in Section~\ref{in_ev_fi},
+the {\sc Matlab} interface of  \fmmv\ provides separate routines
+\begin{verbatim}
+    fmmvcoulomb3d_initialize
+    fmmvcoulomb3d_evaluate
+    fmmvcoulomb3d_finalize
+\end{verbatim}
+for the three main steps---initialization, evaluation, and finalization---of 
+the algorithm.  
+The basic usage now looks like
+\begin{verbatim}
+    fmmvhandle = fmmvcoulomb3d_initialize(particles)
+    ...
+    pot = fmmvcoulomb3d_evaluate(fmmvhandle, charges)
+    ...
+    fmmvcoulomb3d_finalize(fmmvhandle)
+\end{verbatim}
+Here, \verb|fmmvHandle| serves for the internal communication 
+between the routines.
+\subsubsection*{Dipole Sources}
+The kind of sources to be handled can be determined by a second argument 
+\verb|type| to \verb|fmmvcoulomb3d_initialize|:
+\begin{itemize}
+	\item \verb|type=0| for monopole charges only. As shown above, 
+	this is the default and does not have to be explicitly specified.
+	\item \verb|type=1| for dipole charges only:
+\begin{verbatim}
+    fmmvhandle = fmmvcoulomb3d_initialize(particles, 1)
+    ...
+    pot = fmmvcoulomb3d_evaluate(fmmvhandle, [], dipolemoments)
+    ...
+\end{verbatim}
+	In this case the second argument of \verb|fmmvcoulomb3d_evaluate|
+	is ignored and can thus be, e.g.,  
+	the empty matrix \verb|[]|.
+	\item \verb|type=2| for monopole and dipole charges:
+\begin{verbatim}
+    fmmvhandle = fmmvcoulomb3d_initialize(particles, 2)
+    ...
+    pot = fmmvcoulomb3d_evaluate(fmmvhandle, charges, dipolemoments)
+    ...
+\end{verbatim}
+\end{itemize}
+In the latter two cases the argument \verb|dipolemoments| of \verb|fmmvcoulomb3d_evaluate|
+is of course mandatory.
+
+\subsubsection*{Computing Gradients}
+A third non-zero argument of \verb|fmmvcoulomb3d_initialize| requires
+\verb|fmmvcoulomb3d_evaluate| to compute gradients. 
+\begin{verbatim}
+    fmmvhandle = fmmvcoulomb3d_initialize(charges, type, 1)
+    ...
+    [pot, grad] = fmmvcoulomb3d_evaluate(fmmvhandle, charges, dipolemoments)
+    ...
+\end{verbatim}
+In this case, the second output parameter \verb|grad| of 
+\verb|fmmvcoulomb3d_evaluate|
+is mandatory.
+\subsubsection*{Independent Target Locations}
+Independent target locations supplied to \verb|fmmvcoulomb3d_initialize|,
+\begin{verbatim}
+    fmmvhandle = fmmvcoulomb3d_initialize(particles, type, grad, targets)
+\end{verbatim}
+cause subsequent calls of \verb|fmmvcoulomb3d_evaluate| to calculate their results
+at these given locations.
+\subsubsection*{Further Options}
+An options structure can be supplied at time of initialization only:
+\begin{verbatim}
+    fmmvhandle = fmmvcoulomb3d_initialize(particles, type, grad, targets, options)
+\end{verbatim}
+The corresponding options then also apply to subsequent calls of 
+\verb|fmmvcoulomb3d_evaluate|.
+
