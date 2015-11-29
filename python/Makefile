@@ -35,4 +35,6 @@ all: setup.py fmmvmodule.c
 # third-party Python modules. You will need to have root 
 # permissions for this.
 
-
+clean:
+	rm -f *.so
+	rm -r -f build

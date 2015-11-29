@@ -48,11 +48,14 @@ dll: $(ODIR)/fmmvcoul3d.dll
 
 
 clean:
-	rm -f $(ODIR)/*.o
-	rm -f $(ODIR)/*.a
-	rm -f $(ODIR)/*.lo
-	rm -f $(ODIR)/*.la
-	rm -f -r $(ODIR)/.libs
+	rm -f -r $(ODIR)
+	rm -f Makefile2
+
+#	rm -f $(ODIR)/*.o
+#	rm -f $(ODIR)/*.a
+#	rm -f $(ODIR)/*.lo
+#	rm -f $(ODIR)/*.la
+#	rm -f -r $(ODIR)/.libs
 
 odir:
 	if test ! -d $(ODIR)  ; then mkdir $(ODIR) ; fi
@@ -60,7 +63,7 @@ odir:
 
 
 Makefile2: ../gen_Makefile2.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_Makefile2.py  > Makefile2
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_Makefile2.py  > Makefile2
 
 include Makefile2
 
@@ -80,85 +83,85 @@ include Makefile2
 
 
 fmmv3d.h: ../gen_frontend.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_frontend.py header > fmmv3d.h
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_frontend.py header > fmmv3d.h
 
 fmmv3d.c: ../gen_frontend.py fmmv_setup.py fmmv3d.h
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_frontend.py source > fmmv3d.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_frontend.py source > fmmv3d.c
 
 fmmv_sys.h: ../gen_ida.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida.py header > fmmv_sys.h
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida.py header > fmmv_sys.h
 
 fmmv_access.h: ../gen_ida.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida.py access > fmmv_access.h
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida.py access > fmmv_access.h
 
 ida.c: ../gen_ida.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida.py source > ida.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida.py source > ida.c
 
 ida_copy.c: ../gen_ida_copy.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida_copy.py > ida_copy.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida_copy.py > ida_copy.c
 
 ida_copy_simd2.c: ../gen_ida_copy.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida_copy.py simd2 > ida_copy_simd2.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida_copy.py simd2 > ida_copy_simd2.c
 
 ida_copy_simd4.c: ../gen_ida_copy.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida_copy.py simd4 > ida_copy_simd4.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida_copy.py simd4 > ida_copy_simd4.c
 
 gen_neighbor2_list.c: ../gen_gen_neighbor2_list.py 
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_gen_neighbor2_list.py > gen_neighbor2_list.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_gen_neighbor2_list.py > gen_neighbor2_list.c
 
 M2L.h: ../gen_M2L_h.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_M2L_h.py > M2L.h
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_M2L_h.py > M2L.h
 
 M2L.c: M2L.h
 	ln -s -f ../M2L.c M2L.c
 	
 core_gen_eval.c: gen_core_gen_eval.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_core_gen_eval.py > core_gen_eval.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_core_gen_eval.py > core_gen_eval.c
 	
 core_gen_eval_simd2.c: gen_core_gen_eval.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_core_gen_eval.py simd2 > core_gen_eval_simd2.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_core_gen_eval.py simd2 > core_gen_eval_simd2.c
 
 core_gen_eval_simd4.c: gen_core_gen_eval.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_core_gen_eval.py simd4 > core_gen_eval_simd4.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_core_gen_eval.py simd4 > core_gen_eval_simd4.c
 
 spherical_harmonics.c: gen_spherical_harmonics.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_spherical_harmonics.py > spherical_harmonics.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_spherical_harmonics.py > spherical_harmonics.c
 
 spherical_harmonics_simd2.c: gen_spherical_harmonics.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_spherical_harmonics.py simd2 > spherical_harmonics_simd2.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_spherical_harmonics.py simd2 > spherical_harmonics_simd2.c
 
 spherical_harmonics_simd4.c: gen_spherical_harmonics.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_spherical_harmonics.py simd4 > spherical_harmonics_simd4.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_spherical_harmonics.py simd4 > spherical_harmonics_simd4.c
 
 FFT_M2X_X2L_cores_init.c: gen_FFT_M2X_X2L.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L.py cores_init > FFT_M2X_X2L_cores_init.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L.py cores_init > FFT_M2X_X2L_cores_init.c
 
 FFT_M2X_X2L_cores.c: gen_FFT_M2X_X2L.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L.py cores > FFT_M2X_X2L_cores.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L.py cores > FFT_M2X_X2L_cores.c
 
 FFT_M2X_X2L_cores_simd4.c: gen_FFT_M2X_X2L.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L.py cores_simd4 > FFT_M2X_X2L_cores_simd4.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L.py cores_simd4 > FFT_M2X_X2L_cores_simd4.c
 
 FFT_M2X_X2L_cores_simd2.c: gen_FFT_M2X_X2L.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L.py cores_simd2 > FFT_M2X_X2L_cores_simd2.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L.py cores_simd2 > FFT_M2X_X2L_cores_simd2.c
 
 FFT_M2X_X2L_aux.c: gen_FFT_M2X_X2L_aux.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python  gen_FFT_M2X_X2L_aux.py > FFT_M2X_X2L_aux.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON)  gen_FFT_M2X_X2L_aux.py > FFT_M2X_X2L_aux.c
 
 FFT_M2X_X2L_aux_simd4.c: gen_FFT_M2X_X2L_aux.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L_aux.py simd4 > FFT_M2X_X2L_aux_simd4.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L_aux.py simd4 > FFT_M2X_X2L_aux_simd4.c
 
 FFT_M2X_X2L_aux_simd2.c: gen_FFT_M2X_X2L_aux.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L_aux.py simd2 > FFT_M2X_X2L_aux_simd2.c
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L_aux.py simd2 > FFT_M2X_X2L_aux_simd2.c
 
 FFT_M2X_X2L_tables.h: gen_FFT_M2X_X2L_tables.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L_tables.py > FFT_M2X_X2L_tables.h
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L_tables.py > FFT_M2X_X2L_tables.h
 
 FFT_M2X_X2L_tables_simd4.h: gen_FFT_M2X_X2L_tables.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L_tables.py simd4 > FFT_M2X_X2L_tables_simd4.h
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L_tables.py simd4 > FFT_M2X_X2L_tables_simd4.h
 
 FFT_M2X_X2L_tables_simd2.h: gen_FFT_M2X_X2L_tables.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" python gen_FFT_M2X_X2L_tables.py simd2 > FFT_M2X_X2L_tables_simd2.h
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_FFT_M2X_X2L_tables.py simd2 > FFT_M2X_X2L_tables_simd2.h
 
 FFT_M2X_X2L.c: FFT_M2X_X2L_tables.h
 

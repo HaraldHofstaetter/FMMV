@@ -49,11 +49,14 @@ lib: single double fmmv2d.h
 dll: $(ODIR)/fmmvcoul2d.dll 
 
 clean:
-	rm -f $(ODIR)/*.o
-	rm -f $(ODIR)/*.a
-	rm -f $(ODIR)/*.lo
-	rm -f $(ODIR)/*.la
-	rm -f -r $(ODIR)/.libs
+	rm -f -r $(ODIR)
+	rm -f  Makefile2
+
+#	rm -f $(ODIR)/*.o
+#	rm -f $(ODIR)/*.a
+#	rm -f $(ODIR)/*.lo
+#	rm -f $(ODIR)/*.la
+#	rm -f -r $(ODIR)/.libs
 
 odir:
 	if test ! -d $(ODIR)  ; then mkdir $(ODIR) ; fi
@@ -61,7 +64,7 @@ odir:
 
 
 Makefile2: ../gen_Makefile2.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_Makefile2.py  > Makefile2
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_Makefile2.py  > Makefile2
 
 include Makefile2
 
@@ -71,34 +74,34 @@ include Makefile2
 
 
 fmmv2d.h: ../gen_frontend.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_frontend.py header > fmmv2d.h
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_frontend.py header > fmmv2d.h
 
 fmmv2d.c: ../gen_frontend.py fmmv_setup.py fmmv2d.h
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_frontend.py source > fmmv2d.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_frontend.py source > fmmv2d.c
 
 fmmv_sys.h: ../gen_ida.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida.py header > fmmv_sys.h
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida.py header > fmmv_sys.h
 
 fmmv_access.h: ../gen_ida.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida.py access > fmmv_access.h
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida.py access > fmmv_access.h
 
 ida.c: ../gen_ida.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida.py source > ida.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida.py source > ida.c
 
 ida_copy.c: ../gen_ida_copy.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida_copy.py > ida_copy.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida_copy.py > ida_copy.c
 
 ida_copy_simd2.c: ../gen_ida_copy.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida_copy.py simd2 > ida_copy_simd2.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida_copy.py simd2 > ida_copy_simd2.c
 
 ida_copy_simd4.c: ../gen_ida_copy.py fmmv_setup.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_ida_copy.py simd4 > ida_copy_simd4.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_ida_copy.py simd4 > ida_copy_simd4.c
 
 gen_neighbor2_list.c: ../gen_gen_neighbor2_list.py 
-	PYTHONPATH=".:..:$(PYTHONPATH)" python ../gen_gen_neighbor2_list.py > gen_neighbor2_list.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) ../gen_gen_neighbor2_list.py > gen_neighbor2_list.c
 
 M2L.c: gen_M2L.py
-	PYTHONPATH=".:..:$(PYTHONPATH)" python gen_M2L.py > M2L.c
+	PYTHONPATH=".:..:$(PYTHONPATH)" $(PYTHON) gen_M2L.py > M2L.c
 
 #M2L.c: M2L.h
 

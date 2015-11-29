@@ -76,5 +76,6 @@ setup (name = 'fmmv',
 	version = '2.0',
 	description = 'The Fastest Multipole Method of Vienna',
 	author = 'Harald Hofstaetter',
-	author_email = 'harald.hofstaetter@univie.ac.at',
+	author_email = 'hofi@harald-hofstaetter.at',
+        url = "http://www.harald-hofstaetter.at",
 	ext_modules = [module2d, module2df, module3d, module3df])
