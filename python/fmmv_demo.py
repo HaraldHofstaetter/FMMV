@@ -740,8 +740,7 @@ class Application(Frame):
 #of the Fast Multipole Method
 #a.k.a.
 """FMMV
-The Fastest Multipole Method 
-of Vienna
+The Fastest Multipole Method of Vienna
 
 written by
 Harald Hofstaetter
@@ -751,6 +750,8 @@ FMMV is
 (c) 2006-2015 Harald Hofstaetter,
 released under the GNU 
 General Public License (GPL)
+
+This project was supported by the Special Research Program SFB F011 'AURORA' (Project 5: Advanced Scientific Computing) of the Austrian Science Fund FWF.
 """
 		)	
 
@@ -1313,13 +1314,13 @@ General Public License (GPL)
 		self.quitButton = Button ( self.buttonsFrame, text="Quit", 
 			command=self.quit ) 
 		self.quitButton.pack(side=LEFT)
-		try:
-			self.aurorapic=PhotoImage(file="aurora.gif")
-			self.auroraLabel = Label(self.buttonsFrame, image = self.aurorapic)
-			self.auroraLabel.pack(side=LEFT)
-			self.balloon.bind(self.auroraLabel, help["aurora"])
-		except:
-			None
+		#try:
+		#	self.aurorapic=PhotoImage(file="aurora.gif")
+		#	self.auroraLabel = Label(self.buttonsFrame, image = self.aurorapic)
+		#	self.auroraLabel.pack(side=LEFT)
+		#	self.balloon.bind(self.auroraLabel, help["aurora"])
+		#except:
+		#	None
                 
 
 		self.titleFrame["relief"] = "groove"
