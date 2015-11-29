@@ -745,14 +745,10 @@ of Vienna
 
 written by
 Harald Hofstaetter
-harald.hofstaetter@univie.ac.at
-
-Institue of Mathematics 
-University of Vienna
-Austria
+http://harald-hofstaetter.at
 
 FMMV is 
-(c) 2006-2010 Harald Hofstaetter,
+(c) 2006-2015 Harald Hofstaetter,
 released under the GNU 
 General Public License (GPL)
 """
@@ -1295,13 +1291,7 @@ General Public License (GPL)
 			self.libVersionFrame.grid(row=row, column=1, sticky=W)
 
 		self.buttonsFrame = Frame(self)
-		try:
-			self.aurorapic=PhotoImage(file="aurora.gif")
-			self.auroraLabel = Label(self.buttonsFrame, image = self.aurorapic)
-			self.auroraLabel.pack(side=LEFT)
-			self.balloon.bind(self.auroraLabel, help["aurora"])
-		except:
-			None
+
 		self.runButton = Button ( self.buttonsFrame, text="Run", 
 			command=self.run_fmm ) 
 		self.runButton.pack(side=LEFT) 
@@ -1323,6 +1313,14 @@ General Public License (GPL)
 		self.quitButton = Button ( self.buttonsFrame, text="Quit", 
 			command=self.quit ) 
 		self.quitButton.pack(side=LEFT)
+		try:
+			self.aurorapic=PhotoImage(file="aurora.gif")
+			self.auroraLabel = Label(self.buttonsFrame, image = self.aurorapic)
+			self.auroraLabel.pack(side=LEFT)
+			self.balloon.bind(self.auroraLabel, help["aurora"])
+		except:
+			None
+                
 
 		self.titleFrame["relief"] = "groove"
 		self.titleFrame["borderwidth"] = 2
