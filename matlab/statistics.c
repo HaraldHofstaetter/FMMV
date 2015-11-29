@@ -22,6 +22,8 @@
  * 
  */
 
+#include <stdint.h>  /* uint16_t etc. */
+#include <uchar.h>  /* uchar16_t */
 #include "mex.h"
 #if (DIM==2)
 #include "fmmv2d.h"
@@ -80,35 +82,35 @@ void genStatistics(struct FmmvStatistics *statistics)
 
 	for (i=0; i<_STAT_LAST_; i++) {
 		if (statistics->time[i]>=0.0) {
-			mxSetFieldByNumber(stat, 0, i, mxCreateScalarDouble(statistics->etime[i]));
+			mxSetFieldByNumber(stat, 0, i, mxCreateDoubleScalar(statistics->etime[i]));
 		}	
 	}	
 	if (statistics->noOfParticles >=0)
-		mxSetField(stat, 0, "noOfParticles", mxCreateScalarDouble(statistics->noOfParticles));
+		mxSetField(stat, 0, "noOfParticles", mxCreateDoubleScalar(statistics->noOfParticles));
 	if (statistics->noOfTargets >=0)
-		mxSetField(stat, 0, "noOfTargets", mxCreateScalarDouble(statistics->noOfTargets));
+		mxSetField(stat, 0, "noOfTargets", mxCreateDoubleScalar(statistics->noOfTargets));
 	if (statistics->maxNoOfStoredXin >=0)
-		mxSetField(stat, 0, "maxNoOfStoredXin", mxCreateScalarDouble(statistics->maxNoOfStoredXin));
+		mxSetField(stat, 0, "maxNoOfStoredXin", mxCreateDoubleScalar(statistics->maxNoOfStoredXin));
 	if (statistics->noOfSourceLevels >=0)
-		mxSetField(stat, 0, "noOfSourceLevels", mxCreateScalarDouble(statistics->noOfSourceLevels));
+		mxSetField(stat, 0, "noOfSourceLevels", mxCreateDoubleScalar(statistics->noOfSourceLevels));
 	if (statistics->noOfTargetLevels >=0)
-		mxSetField(stat, 0, "noOfTargetLevels", mxCreateScalarDouble(statistics->noOfTargetLevels));
+		mxSetField(stat, 0, "noOfTargetLevels", mxCreateDoubleScalar(statistics->noOfTargetLevels));
 	if (statistics->noOfSourceBoxes >=0)
-		mxSetField(stat, 0, "noOfSourceBoxes", mxCreateScalarDouble(statistics->noOfSourceBoxes));
+		mxSetField(stat, 0, "noOfSourceBoxes", mxCreateDoubleScalar(statistics->noOfSourceBoxes));
 	if (statistics->noOfTargetBoxes >=0)
-		mxSetField(stat, 0, "noOfTargetBoxes", mxCreateScalarDouble(statistics->noOfTargetBoxes));
+		mxSetField(stat, 0, "noOfTargetBoxes", mxCreateDoubleScalar(statistics->noOfTargetBoxes));
 	if (statistics->noOfSourceLeafBoxes >=0)
-		mxSetField(stat, 0, "noOfSourceLeafBoxes", mxCreateScalarDouble(statistics->noOfSourceLeafBoxes));
+		mxSetField(stat, 0, "noOfSourceLeafBoxes", mxCreateDoubleScalar(statistics->noOfSourceLeafBoxes));
 	if (statistics->noOfTargetLeafBoxes >=0)
-		mxSetField(stat, 0, "noOfTargetLeafBoxes", mxCreateScalarDouble(statistics->noOfTargetLeafBoxes));
+		mxSetField(stat, 0, "noOfTargetLeafBoxes", mxCreateDoubleScalar(statistics->noOfTargetLeafBoxes));
 	if (statistics->averageNoOfParticlesPerLeafBox >=0)
-		mxSetField(stat, 0, "averageNoOfParticlesPerLeafBox", mxCreateScalarDouble(statistics->averageNoOfParticlesPerLeafBox));
+		mxSetField(stat, 0, "averageNoOfParticlesPerLeafBox", mxCreateDoubleScalar(statistics->averageNoOfParticlesPerLeafBox));
 	if (statistics->averageNoOfTargetsPerLeafBox >=0)
-		mxSetField(stat, 0, "averageNoOfTargetsPerLeafBox", mxCreateScalarDouble(statistics->averageNoOfTargetsPerLeafBox));
+		mxSetField(stat, 0, "averageNoOfTargetsPerLeafBox", mxCreateDoubleScalar(statistics->averageNoOfTargetsPerLeafBox));
 	if (statistics->maxAllocatedMemory >=0)
-		mxSetField(stat, 0, "maxAllocatedMemory", mxCreateScalarDouble(statistics->maxAllocatedMemory));
+		mxSetField(stat, 0, "maxAllocatedMemory", mxCreateDoubleScalar(statistics->maxAllocatedMemory));
 	if (statistics->noOfDirectInteractions >=0)
-		mxSetField(stat, 0, "noOfDirectInteractions", mxCreateScalarDouble(statistics->noOfDirectInteractions));
+		mxSetField(stat, 0, "noOfDirectInteractions", mxCreateDoubleScalar(statistics->noOfDirectInteractions));
 
 	if (statistics->noOfParticles >=0) {
 		tmp = mxCreateDoubleMatrix(1, statistics->noOfSourceLevels+1, mxREAL);

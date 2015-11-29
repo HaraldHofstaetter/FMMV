@@ -1,8 +1,8 @@
-CC = gcc 
-CFLAGS =  -g -fPIC
+CC = gcc
+CFLAGS =  -g -fPIC 
 
 MATLABPATH = /usr/local/MATLAB/R2013a/
-MEX = $(MATLABPATH)/bin/mex -O -largeArrayDims
+MEX = $(MATLABPATH)/bin/mex  -O -largeArrayDims
 MATLABINC = $(MATLABPATH)/extern/include
 
 #MEXSFX = mexglx
