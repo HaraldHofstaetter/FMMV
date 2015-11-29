@@ -42,8 +42,8 @@ TGZ_FILES = \
     gen_straightline_code.py \
     M2L.c \
     Makefile \
+    Makefile.inc \
     Makefile.gcc \
-    Makefile.icc \
     Makefile.osx \
     pyparsing.py \
     simd2d.h \
@@ -244,7 +244,8 @@ TGZ_FILES = \
     affmmlap/Makefile    \
     affmmlap/prini.f      \
     affmmlap/test_huang.f90  \
-    affmmlap/treeadap.f
+    affmmlap/treeadap.f \
+    lib/dummy
 
 
 
