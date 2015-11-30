@@ -22,13 +22,15 @@
 include ../Makefile.inc
 
 all: setup.py fmmvmodule.c
-	NUMPY_INCLUDE=$(NUMPY_INCLUDE) $(PYTHON) setup.py build --force   --debug 
+	NUMPY_INCLUDE=$(NUMPY_INCLUDE) \
+	LIB_INSTALLDIR=$(LIB_INSTALLDIR) \
+	INC_INSTALLDIR=$(INC_INSTALLDIR) \
+	$(PYTHON) setup.py build --force   --debug 
 	$(PYTHON) setup.py install  --install-platlib=.
-	LD_LIBRARY_PATH=../lib:$(LD_LIBRARY_PATH) $(PYTHON) fmmv_demo.py &
-
-#	python fmmv_demo.py &
-
-#	LD_LIBRARY_PATH=../lib:$(LD_LIBRARY_PATH) python fmmv_demo.py &
+	LD_LIBRARY_PATH=$(LIB_INSTALLDIR):$(LD_LIBRARY_PATH) \
+	$(PYTHON) fmmv_demo.py 2 & # start 2d demo applet
+	LD_LIBRARY_PATH=$(LIB_INSTALLDIR):$(LD_LIBRARY_PATH) \
+	$(PYTHON) fmmv_demo.py 3 & # start 3d demo applet
 
 # Delete the "--install-platlib=." option above to install 
 # the FMMV Python modules into the standard location for 

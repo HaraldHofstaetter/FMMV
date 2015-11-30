@@ -1,8 +1,5 @@
 include ../Makefile.inc
 
-INCDIR = ../include
-LIBDIR = ../lib
-
 all: test_fmmv3d test_fmmv3df  \
      test_fmmv2d test_fmmv2df 
 
@@ -29,12 +26,12 @@ test_fmmv3df.o: test_fmmv.F90 fmmv3d_module.mod test_utilities_f.mod
 test_fmmv3d: test_fmmv3d.o test_utilities.o
 	$(FC) $(TEST_LN_FLAGS) -o test_fmmv3d test_fmmv3d.o \
 	test_utilities.o \
-        -L$(LIBDIR) -lfmmv3d  $(LIBS)
+        -L$(LIB_INSTALLDIR) -lfmmv3d  $(LIBS)
 
 test_fmmv3df: fmmv3d.o test_fmmv3df.o test_utilities_f.o
 	$(FC) $(TEST_LN_FLAGS) -o test_fmmv3df test_fmmv3df.o \
 	fmmv3d.o test_utilities_f.o \
-        -L$(LIBDIR) -lfmmv3df  $(LIBS)
+        -L$(LIB_INSTALLDIR) -lfmmv3df  $(LIBS)
 
 
 
@@ -52,12 +49,12 @@ test_fmmv2df.o: test_fmmv.F90 fmmv2d_module.mod test_utilities_f.mod
 test_fmmv2d:  test_fmmv2d.o test_utilities.o
 	$(FC) $(TEST_LN_FLAGS) -o test_fmmv2d test_fmmv2d.o \
 	test_utilities.o \
-        -L$(LIBDIR) -lfmmv2d  $(LIBS)
+        -L$(LIB_INSTALLDIR) -lfmmv2d  $(LIBS)
 
 test_fmmv2df: fmmv2d.o test_fmmv2df.o test_utilities_f.o
 	$(FC) $(TEST_LN_FLAGS) -o test_fmmv2df test_fmmv2df.o \
 	fmmv2d.o test_utilities_f.o \
-        -L$(LIBDIR) -lfmmv2df  $(LIBS)
+        -L$(LIB_INSTALLDIR) -lfmmv2df  $(LIBS)
 
 
 clean:

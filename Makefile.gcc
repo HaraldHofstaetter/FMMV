@@ -9,8 +9,10 @@ LIBTOOL_LINK = libtool --mode=link $(LN) -g -O
 LIBTOOL_INSTALL = libtool --mode=install cp
 LIBTOOL_FINISH = libtool --finish
 
-#Note: option -fno-strict-aliasing only necessary for GETBIT macro in build_tree_3d.c
+LIB_INSTALLDIR = $(HOME)/lib
+INC_INSTALLDIR = $(HOME)/include
 
+#Note: option -fno-strict-aliasing only necessary for GETBIT macro in build_tree_3d.c
 ODIR = ODIR_GCC
 CFLAGS =  -DUSE_PTHREADS -O3 -fno-strict-aliasing -march=nocona -msse2 -funroll-loops -fomit-frame-pointer -Wall
 FFLAGS = -O3 -fno-strict-aliasing -march=nocona -msse2 -funroll-loops -fomit-frame-pointer -Wall
@@ -21,6 +23,8 @@ FFLAGS = -O3 -fno-strict-aliasing -march=nocona -msse2 -funroll-loops -fomit-fra
 
 PYTHON = /usr/bin/python2.7
 NUMPY_INCLUDE = "/usr/lib/python2.7/dist-packages/numpy/core/include/numpy"
+
+MATLABPATH = /usr/local/MATLAB/R2013a/
 
 
 

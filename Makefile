@@ -1,25 +1,12 @@
-all: 2d_dir 3d_dir test_dir
-
-2d_dir:
-	cd 2d; make
-
-3d_dir:
+all:
+	cd 2d; make 
 	cd 3d; make
 
-test_dir: 2d_dir 3d_dir
-	cd test; make
-
-python_dir: 2d_dir 3d_dir
-	cd python; make
-
-matlab_dir: 2d_dir 3d_dir
-	cd matlab; make
-
-fortran_dir: 2d_dir 3d_dir
-	cd fortran; make
+install: all
+	cd 2d; make install
+	cd 3d; make install
 
 clean:
-	cd lib; rm -f libfmmv*
 	cd 2d; make clean
 	cd 3d; make clean
 	cd test; make clean

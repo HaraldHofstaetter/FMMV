@@ -1,4 +1,4 @@
-# FMMV - the Fastest Multipole Method of Vienna
+
 # Copyright (c) 2006-2015 Harald Hofstaetter
 # http://www.harald-hofstaetter.at
 #
@@ -19,8 +19,13 @@
 # 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("dim", help="choose 2d or 3d version", nargs='?', type=int, choices=[2, 3], default=3)
+dim = parser.parse_args().dim
+#dim = 3
+
 extra_icc_lib = False
-dim = 3
 
 from Tkinter import * 
 import tkMessageBox
@@ -728,7 +733,7 @@ class Application(Frame):
 	def __init__(self, master=None, ):
 		Frame.__init__(self, master) 
 		self.grid() 
-		self.master.title("FMMV Demo Application") 
+		self.master.title("FMMV%iD Demo Application" % dim ) 
 		self.createWidgets()
 		self.resetWidgets()
 		self.resultWindows = []
@@ -860,17 +865,17 @@ This project was supported by the Special Research Program SFB F011 'AURORA' (Pr
 		self.boundaryConditionsVar.set(0)
 		self.extrinsicCorrectionVar.set(1)
 		self.extrinsicCorrectionCheckbutton.configure(state=DISABLED)
-		self.adaptiveSavedValue=0
-		self.adaptiveVar.set(0)
+		self.adaptiveSavedValue=1
+		self.adaptiveVar.set(1)
 		self.adaptiveRadiobutton.configure(state=NORMAL)
 		self.levelsVar.set(3)
-		self.levelsOptionMenu.configure(label_state=NORMAL)
-		self.levelsOptionMenu.configure(menubutton_state=NORMAL)
+		self.levelsOptionMenu.configure(label_state=DISABLED)
+		self.levelsOptionMenu.configure(menubutton_state=DISABLED)
 		self.splitThresholdVar.set(100)
 		self.splitTargetThresholdVar.set(100)
-		self.splitThresholdEntry.configure(label_state=DISABLED)
-		self.splitThresholdEntry.configure(entry_state=DISABLED)
-		self.splitThresholdEntry.configure(listbox_state=DISABLED)
+		self.splitThresholdEntry.configure(label_state=NORMAL)
+		self.splitThresholdEntry.configure(entry_state=NORMAL)
+		self.splitThresholdEntry.configure(listbox_state=NORMAL)
 		self.splitTargetThresholdEntry.configure(label_state=DISABLED)
 		self.splitTargetThresholdEntry.configure(entry_state=DISABLED)
 		self.splitTargetThresholdEntry.configure(listbox_state=DISABLED)
@@ -1029,7 +1034,7 @@ This project was supported by the Special Research Program SFB F011 'AURORA' (Pr
 		self.titleFrame = Frame(self, borderwidth=2, relief='groove')
 		
 		#self.titleLabel = Label(self.titleFrame, text="FMMV - A Fully Vectorized Implementation of the Fast Multipole Method", font="times 18 bold")
-		self.titleLabel = Label(self.titleFrame, text="FMMV - The Fastest Multipole Method of Vienna", font="times 18 bold")
+		self.titleLabel = Label(self.titleFrame, text="FMMV - The Fastest Multipole Method of Vienna (%iD version)" % dim, font="times 18 bold")
 		self.titleLabel.pack(side='left', ipady=3)
 
 		self.problemFrame = Frame(self, borderwidth=2, relief='groove')

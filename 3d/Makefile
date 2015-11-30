@@ -24,18 +24,16 @@
 
 include ../Makefile.inc
 
-LIB_INSTALLDIR = $(PWD)/../lib
-INC_INSTALLDIR = $(PWD)/../include
 LIBNAME = libfmmv3d
 LIBFNAME = libfmmv3df
 
-all: lib 
+all: single double fmmv3d.h
 
 single: Makefile2 $(ODIR)/$(LIBFNAME).la
 
 double: Makefile2 $(ODIR)/$(LIBNAME).la
 
-lib: single double fmmv3d.h
+install: all
 	if test ! -d $(LIB_INSTALLDIR)  ; then mkdir $(LIB_INSTALLDIR) ; fi
 	$(LIBTOOL_INSTALL) $(ODIR)/$(LIBFNAME).la $(LIB_INSTALLDIR)
 	$(LIBTOOL_INSTALL) $(ODIR)/$(LIBNAME).la $(LIB_INSTALLDIR)
@@ -43,13 +41,37 @@ lib: single double fmmv3d.h
 	if test ! -d $(INC_INSTALLDIR)  ; then mkdir $(INC_INSTALLDIR) ; fi
 	$(LIBTOOL_INSTALL) fmmv3d.h $(INC_INSTALLDIR)
 
-#dll: $(ODIR)/fmmvcoul3d.dll $(ODIR)/fmmvcoul3df.dll 
-dll: $(ODIR)/fmmvcoul3d.dll 
+
+# automatically generated files to be deleted on clenaing up:
+GENERATED_FILES =  \
+        core_gen_eval.c \
+        core_gen_eval_simd2.c \
+        core_gen_eval_simd4.c \
+        FFT_M2X_X2L_aux_simd2.c \
+        FFT_M2X_X2L_aux_simd4.c \
+        FFT_M2X_X2L_cores_init.c \
+        FFT_M2X_X2L_cores_simd2.c \
+        FFT_M2X_X2L_cores_simd4.c \
+        fmmv3d.c \
+        gen_neighbor2_list.c \
+        ida.c \
+        ida_copy_simd2.c \
+        ida_copy_simd4.c \
+        spherical_harmonics.c \
+        spherical_harmonics_simd2.c \
+        spherical_harmonics_simd4.c \
+        FFT_M2X_X2L_tables_simd2.h \
+        FFT_M2X_X2L_tables_simd4.h \
+        fmmv3d.h \
+        fmmv_access.h \
+        fmmv_sys.h \
+        M2L.h \
+        Makefile2
 
 
 clean:
 	rm -f -r $(ODIR)
-	rm -f Makefile2
+	rm -f $(GENERATED_FILES)
 
 #	rm -f $(ODIR)/*.o
 #	rm -f $(ODIR)/*.a
@@ -169,24 +191,6 @@ FFT_M2X_X2L_simd2.c: FFT_M2X_X2L_tables_simd2.h
 
 FFT_M2X_X2L_simd4.c: FFT_M2X_X2L_tables_simd4.h
 
-GENERATED_FILES = Makefile2 \
-	spherical_harmonics.c \
-	spherical_harmonics_simd2.c \
-	spherical_harmonics_simd4.c \
-	core_gen_eval.c \
-	core_gen_eval_simd2.c \
-	core_gen_eval_simd4.c \
-	M2L.h \
-	FFT_M2X_X2L_cores_init.c \
-	FFT_M2X_X2L_cores.c \
-	FFT_M2X_X2L_cores_simd4.c \
-	FFT_M2X_X2L_cores_simd2.c \
-	FFT_M2X_X2L_aux.c \
-	FFT_M2X_X2L_aux_simd4.c \
-	FFT_M2X_X2L_aux_simd2.c \
-	FFT_M2X_X2L_tables.h \
-	FFT_M2X_X2L_tables_simd4.h \
-	FFT_M2X_X2L_tables_simd2.h 
 
 NAMES = \
 	fmmv3d	\
@@ -290,7 +294,7 @@ $(OBJS_FLOAT) $(OBJS_DOUBLE): fmmv_sys.h fmmv_access.h
 $(ODIR)/$(LIBNAME).la: odir $(OBJS_DOUBLE) 
 	$(LIBTOOL_LINK) -o \
 	$(ODIR)/$(LIBNAME).la $(LOBJS_DOUBLE)  \
-	-rpath $(LIB_INSTALLDIR) $(LIBS) 
+	-rpath $(LIB_INSTALLDIR) $(LIBS)
 
 $(ODIR)/$(LIBFNAME).la: odir $(OBJS_FLOAT) 
 	$(LIBTOOL_LINK) -o \

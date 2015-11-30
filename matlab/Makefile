@@ -1,15 +1,16 @@
+include ../Makefile.inc
+
 CC = gcc
 CFLAGS =  -g -fPIC 
 
-MATLABPATH = /usr/local/MATLAB/R2013a/
 MEX = $(MATLABPATH)/bin/mex  -O -largeArrayDims
 MATLABINC = $(MATLABPATH)/extern/include
 
 #MEXSFX = mexglx
 MEXSFX = mexa64 
-FMMVINC = ../include
-FMMV2DLIB = -L ../lib -lfmmv2d
-FMMV3DLIB = -L ../lib -lfmmv3d
+FMMVINC = $(INC_INSTALLDIR)
+FMMV2DLIB = -L$(LIB_INSTALLDIR) -lfmmv2d
+FMMV3DLIB = -L$(LIB_INSTALLDIR) -lfmmv3d
 
 all: fmmv2d.$(MEXSFX) fmmv2d_initialize.$(MEXSFX) fmmv2d_evaluate.$(MEXSFX) fmmv2d_finalize.$(MEXSFX) \
      fmmv3d.$(MEXSFX) fmmv3d_initialize.$(MEXSFX) fmmv3d_evaluate.$(MEXSFX) fmmv3d_finalize.$(MEXSFX)

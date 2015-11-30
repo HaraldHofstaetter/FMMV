@@ -24,39 +24,41 @@
 
 include ../Makefile.inc
 
-INSTALLDIR = $(PWD)/../lib
-INC_INSTALLDIR = $(PWD)/../include
 LIBNAME = libfmmv2d
 LIBFNAME = libfmmv2df
 
-all: lib 
+all: single double fmmv2d.h
 
 single: Makefile2 $(ODIR)/$(LIBFNAME).la
 
 double: Makefile2 $(ODIR)/$(LIBNAME).la
 
-lib: single double fmmv2d.h
+install: all
 	if test ! -d $(LIB_INSTALLDIR)  ; then mkdir $(LIB_INSTALLDIR) ; fi
-	$(LIBTOOL_INSTALL) $(ODIR)/$(LIBFNAME).la $(INSTALLDIR)
-	$(LIBTOOL_INSTALL) $(ODIR)/$(LIBNAME).la $(INSTALLDIR)
-	$(LIBTOOL_FINISH) $(INSTALLDIR)
+	$(LIBTOOL_INSTALL) $(ODIR)/$(LIBFNAME).la $(LIB_INSTALLDIR)
+	$(LIBTOOL_INSTALL) $(ODIR)/$(LIBNAME).la $(LIB_INSTALLDIR)
+	$(LIBTOOL_FINISH) $(LIB_INSTALLDIR)
 	if test ! -d $(INC_INSTALLDIR)  ; then mkdir $(INC_INSTALLDIR) ; fi
 	$(LIBTOOL_INSTALL) fmmv2d.h $(INC_INSTALLDIR)
 
 
+# automatically generated files to be deleted on clenaing up:
+GENERATED_FILES = \
+        Makefile2 \
+        fmmv2d.c \
+        fmmv2d.h \
+        fmmv_access.h \
+        fmmv_sys.h \
+        gen_neighbor2_list.c \
+        ida.c \
+        ida_copy.c \
 
-#dll: $(ODIR)/fmmvcoul2d.dll $(ODIR)/fmmvcoul2df.dll 
-dll: $(ODIR)/fmmvcoul2d.dll 
+
 
 clean:
 	rm -f -r $(ODIR)
-	rm -f  Makefile2
+	rm -f  $(GENERATED_FILES)
 
-#	rm -f $(ODIR)/*.o
-#	rm -f $(ODIR)/*.a
-#	rm -f $(ODIR)/*.lo
-#	rm -f $(ODIR)/*.la
-#	rm -f -r $(ODIR)/.libs
 
 odir:
 	if test ! -d $(ODIR)  ; then mkdir $(ODIR) ; fi
@@ -106,7 +108,6 @@ M2L.c: gen_M2L.py
 #M2L.c: M2L.h
 
 
-GENERATED_FILES = Makefile2 
 
 NAMES = \
 	fmmv2d	\
@@ -183,11 +184,11 @@ $(OBJS_FLOAT) $(OBJS_DOUBLE): fmmv_sys.h fmmv_access.h
 $(ODIR)/$(LIBNAME).la: odir $(OBJS_DOUBLE) 
 	$(LIBTOOL_LINK) -o \
 	$(ODIR)/$(LIBNAME).la $(LOBJS_DOUBLE)  \
-	-rpath $(INSTALLDIR) $(LNFLAGS) 
+	-rpath $(LIB_INSTALLDIR) $(LIBS) 
 
 $(ODIR)/$(LIBFNAME).la: odir $(OBJS_FLOAT) 
 	$(LIBTOOL_LINK) -o \
 	$(ODIR)/$(LIBFNAME).la $(LOBJS_FLOAT) \
-	-rpath $(INSTALLDIR) $(LNFLAGS)
+	-rpath $(LIB_INSTALLDIR) $(LIBS) 
 
 
