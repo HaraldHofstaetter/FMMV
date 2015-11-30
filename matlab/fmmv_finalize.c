@@ -21,6 +21,8 @@
  * 
  */
 
+#include <stdint.h>  /* uint16_t etc. */
+#include <uchar.h>  /* uchar16_t etc. */
 #include "mex.h"
 #if (DIM==2)
 #include "fmmv2d.h"
