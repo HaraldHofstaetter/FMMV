@@ -2,14 +2,14 @@
 # DO NOT EDIT! */
 
 NAMES_ACCESS = \
-	gen_eval_access_standard\
-	gen_eval_access_st_standard\
-	gen_eval_access_dipole\
-	gen_eval_access_st_dipole\
-	gen_eval_access_grad\
-	gen_eval_access_st_grad\
-	gen_eval_access_dipole_grad\
-	gen_eval_access_st_dipole_grad\
+	gen_eval_expansions_standard\
+	gen_eval_expansions_st_standard\
+	gen_eval_expansions_dipole\
+	gen_eval_expansions_st_dipole\
+	gen_eval_expansions_grad\
+	gen_eval_expansions_st_grad\
+	gen_eval_expansions_dipole_grad\
+	gen_eval_expansions_st_dipole_grad\
 	eval_direct_standard_acc0\
 	eval_direct_periodic_standard_acc0\
 	eval_direct_standard_acc1\
@@ -68,77 +68,77 @@ NAMES_ACCESS = \
 	extrinsic_correction_st_dipole_grad\
 
 
-$(ODIR)/gen_eval_access_standard_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_standard_float.o
+$(ODIR)/gen_eval_expansions_standard_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_standard_float.o
 
-$(ODIR)/gen_eval_access_st_standard_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_standard_float.o
+$(ODIR)/gen_eval_expansions_st_standard_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_standard_float.o
 
-$(ODIR)/gen_eval_access_dipole_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_dipole_float.o
+$(ODIR)/gen_eval_expansions_dipole_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_dipole_float.o
 
-$(ODIR)/gen_eval_access_st_dipole_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_dipole_float.o
+$(ODIR)/gen_eval_expansions_st_dipole_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_dipole_float.o
 
-$(ODIR)/gen_eval_access_grad_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_grad_float.o
+$(ODIR)/gen_eval_expansions_grad_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_grad_float.o
 
-$(ODIR)/gen_eval_access_st_grad_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_grad_float.o
+$(ODIR)/gen_eval_expansions_st_grad_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_grad_float.o
 
-$(ODIR)/gen_eval_access_dipole_grad_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_dipole_grad_float.o
+$(ODIR)/gen_eval_expansions_dipole_grad_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_dipole_grad_float.o
 
-$(ODIR)/gen_eval_access_st_dipole_grad_float.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_dipole_grad_float.o
+$(ODIR)/gen_eval_expansions_st_dipole_grad_float.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_dipole_grad_float.o
 
-$(ODIR)/gen_eval_access_standard_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_standard_simd2_float.o
+$(ODIR)/gen_eval_expansions_standard_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_standard_simd2_float.o
 
-$(ODIR)/gen_eval_access_st_standard_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_standard_simd2_float.o
+$(ODIR)/gen_eval_expansions_st_standard_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_standard_simd2_float.o
 
-$(ODIR)/gen_eval_access_dipole_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_dipole_simd2_float.o
+$(ODIR)/gen_eval_expansions_dipole_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_dipole_simd2_float.o
 
-$(ODIR)/gen_eval_access_st_dipole_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_dipole_simd2_float.o
+$(ODIR)/gen_eval_expansions_st_dipole_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_dipole_simd2_float.o
 
-$(ODIR)/gen_eval_access_grad_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_grad_simd2_float.o
+$(ODIR)/gen_eval_expansions_grad_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_grad_simd2_float.o
 
-$(ODIR)/gen_eval_access_st_grad_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_grad_simd2_float.o
+$(ODIR)/gen_eval_expansions_st_grad_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_grad_simd2_float.o
 
-$(ODIR)/gen_eval_access_dipole_grad_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_dipole_grad_simd2_float.o
+$(ODIR)/gen_eval_expansions_dipole_grad_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_dipole_grad_simd2_float.o
 
-$(ODIR)/gen_eval_access_st_dipole_grad_simd2_float.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_dipole_grad_simd2_float.o
+$(ODIR)/gen_eval_expansions_st_dipole_grad_simd2_float.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_dipole_grad_simd2_float.o
 
-$(ODIR)/gen_eval_access_standard_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_standard_simd4_float.o
+$(ODIR)/gen_eval_expansions_standard_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_standard_simd4_float.o
 
-$(ODIR)/gen_eval_access_st_standard_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_standard_simd4_float.o
+$(ODIR)/gen_eval_expansions_st_standard_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_standard_simd4_float.o
 
-$(ODIR)/gen_eval_access_dipole_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_dipole_simd4_float.o
+$(ODIR)/gen_eval_expansions_dipole_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_dipole_simd4_float.o
 
-$(ODIR)/gen_eval_access_st_dipole_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_dipole_simd4_float.o
+$(ODIR)/gen_eval_expansions_st_dipole_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_dipole_simd4_float.o
 
-$(ODIR)/gen_eval_access_grad_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_grad_simd4_float.o
+$(ODIR)/gen_eval_expansions_grad_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_grad_simd4_float.o
 
-$(ODIR)/gen_eval_access_st_grad_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_grad_simd4_float.o
+$(ODIR)/gen_eval_expansions_st_grad_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_grad_simd4_float.o
 
-$(ODIR)/gen_eval_access_dipole_grad_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_dipole_grad_simd4_float.o
+$(ODIR)/gen_eval_expansions_dipole_grad_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_dipole_grad_simd4_float.o
 
-$(ODIR)/gen_eval_access_st_dipole_grad_simd4_float.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_dipole_grad_simd4_float.o
+$(ODIR)/gen_eval_expansions_st_dipole_grad_simd4_float.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_dipole_grad_simd4_float.o
 
 $(ODIR)/eval_direct_standard_acc0_float.o: eval_direct.c
 	$(LIBTOOL_COMPILE) -c -DSTANDARD -DACCURACY=0 -DFMM_PRECISION=0 $(CFLAGS) -I.. eval_direct.c -o $(ODIR)/eval_direct_standard_acc0_float.o
@@ -644,77 +644,77 @@ $(ODIR)/extrinsic_correction_dipole_grad_simd4_float.o: extrinsic_correction_sim
 $(ODIR)/extrinsic_correction_st_dipole_grad_simd4_float.o: extrinsic_correction_simd4.c
 	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=0 $(CFLAGS) -I.. extrinsic_correction_simd4.c -o $(ODIR)/extrinsic_correction_st_dipole_grad_simd4_float.o
 
-$(ODIR)/gen_eval_access_standard_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_standard_double.o
+$(ODIR)/gen_eval_expansions_standard_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_standard_double.o
 
-$(ODIR)/gen_eval_access_st_standard_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_standard_double.o
+$(ODIR)/gen_eval_expansions_st_standard_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_standard_double.o
 
-$(ODIR)/gen_eval_access_dipole_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_dipole_double.o
+$(ODIR)/gen_eval_expansions_dipole_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_dipole_double.o
 
-$(ODIR)/gen_eval_access_st_dipole_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_dipole_double.o
+$(ODIR)/gen_eval_expansions_st_dipole_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_dipole_double.o
 
-$(ODIR)/gen_eval_access_grad_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_grad_double.o
+$(ODIR)/gen_eval_expansions_grad_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_grad_double.o
 
-$(ODIR)/gen_eval_access_st_grad_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_grad_double.o
+$(ODIR)/gen_eval_expansions_st_grad_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_grad_double.o
 
-$(ODIR)/gen_eval_access_dipole_grad_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_dipole_grad_double.o
+$(ODIR)/gen_eval_expansions_dipole_grad_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_dipole_grad_double.o
 
-$(ODIR)/gen_eval_access_st_dipole_grad_double.o: gen_eval_access.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access.c -o $(ODIR)/gen_eval_access_st_dipole_grad_double.o
+$(ODIR)/gen_eval_expansions_st_dipole_grad_double.o: gen_eval_expansions.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions.c -o $(ODIR)/gen_eval_expansions_st_dipole_grad_double.o
 
-$(ODIR)/gen_eval_access_standard_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_standard_simd2_double.o
+$(ODIR)/gen_eval_expansions_standard_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_standard_simd2_double.o
 
-$(ODIR)/gen_eval_access_st_standard_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_standard_simd2_double.o
+$(ODIR)/gen_eval_expansions_st_standard_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_standard_simd2_double.o
 
-$(ODIR)/gen_eval_access_dipole_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_dipole_simd2_double.o
+$(ODIR)/gen_eval_expansions_dipole_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_dipole_simd2_double.o
 
-$(ODIR)/gen_eval_access_st_dipole_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_dipole_simd2_double.o
+$(ODIR)/gen_eval_expansions_st_dipole_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_dipole_simd2_double.o
 
-$(ODIR)/gen_eval_access_grad_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_grad_simd2_double.o
+$(ODIR)/gen_eval_expansions_grad_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_grad_simd2_double.o
 
-$(ODIR)/gen_eval_access_st_grad_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_grad_simd2_double.o
+$(ODIR)/gen_eval_expansions_st_grad_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_grad_simd2_double.o
 
-$(ODIR)/gen_eval_access_dipole_grad_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_dipole_grad_simd2_double.o
+$(ODIR)/gen_eval_expansions_dipole_grad_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_dipole_grad_simd2_double.o
 
-$(ODIR)/gen_eval_access_st_dipole_grad_simd2_double.o: gen_eval_access_simd2.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd2.c -o $(ODIR)/gen_eval_access_st_dipole_grad_simd2_double.o
+$(ODIR)/gen_eval_expansions_st_dipole_grad_simd2_double.o: gen_eval_expansions_simd2.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd2.c -o $(ODIR)/gen_eval_expansions_st_dipole_grad_simd2_double.o
 
-$(ODIR)/gen_eval_access_standard_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_standard_simd4_double.o
+$(ODIR)/gen_eval_expansions_standard_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DSTANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_standard_simd4_double.o
 
-$(ODIR)/gen_eval_access_st_standard_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_standard_simd4_double.o
+$(ODIR)/gen_eval_expansions_st_standard_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_STANDARD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_standard_simd4_double.o
 
-$(ODIR)/gen_eval_access_dipole_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_dipole_simd4_double.o
+$(ODIR)/gen_eval_expansions_dipole_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_dipole_simd4_double.o
 
-$(ODIR)/gen_eval_access_st_dipole_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_dipole_simd4_double.o
+$(ODIR)/gen_eval_expansions_st_dipole_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_dipole_simd4_double.o
 
-$(ODIR)/gen_eval_access_grad_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_grad_simd4_double.o
+$(ODIR)/gen_eval_expansions_grad_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DGRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_grad_simd4_double.o
 
-$(ODIR)/gen_eval_access_st_grad_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_grad_simd4_double.o
+$(ODIR)/gen_eval_expansions_st_grad_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_grad_simd4_double.o
 
-$(ODIR)/gen_eval_access_dipole_grad_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_dipole_grad_simd4_double.o
+$(ODIR)/gen_eval_expansions_dipole_grad_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DDIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_dipole_grad_simd4_double.o
 
-$(ODIR)/gen_eval_access_st_dipole_grad_simd4_double.o: gen_eval_access_simd4.c
-	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_access_simd4.c -o $(ODIR)/gen_eval_access_st_dipole_grad_simd4_double.o
+$(ODIR)/gen_eval_expansions_st_dipole_grad_simd4_double.o: gen_eval_expansions_simd4.c
+	$(LIBTOOL_COMPILE) -c -DST_DIPOLE_GRAD -DFMM_PRECISION=1 $(CFLAGS) -I.. gen_eval_expansions_simd4.c -o $(ODIR)/gen_eval_expansions_st_dipole_grad_simd4_double.o
 
 $(ODIR)/eval_direct_standard_acc0_double.o: eval_direct.c
 	$(LIBTOOL_COMPILE) -c -DSTANDARD -DACCURACY=0 -DFMM_PRECISION=1 $(CFLAGS) -I.. eval_direct.c -o $(ODIR)/eval_direct_standard_acc0_double.o

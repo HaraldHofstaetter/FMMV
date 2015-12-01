@@ -72,6 +72,10 @@ charge_pot_combs = { #  (charge_comb,  pot_comb, look for match )
 	"_dipole_grad": ("_dipole",    "_grad", 0 ),
 	}	
 
+drivers = [
+        ("",  ["_standard", "_dipole", "_grad", "_dipole_grad"]),
+        ]
+
 ########
 
 ida= { 

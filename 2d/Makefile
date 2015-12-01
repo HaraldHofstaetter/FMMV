@@ -129,7 +129,8 @@ NAMES = \
 	quad_coeffs	\
 	M2L_aux		\
 	bessel		\
-	gen_eval
+	gen_eval_expansions_base \
+	gen_eval_expansions_base_complex
 
 
 NAMES_SIMD = \

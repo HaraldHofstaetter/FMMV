@@ -44,9 +44,9 @@ install: all
 
 # automatically generated files to be deleted on clenaing up:
 GENERATED_FILES =  \
-        core_gen_eval.c \
-        core_gen_eval_simd2.c \
-        core_gen_eval_simd4.c \
+        gen_eval_expansions_core.c \
+        gen_eval_expansions_core_simd2.c \
+        gen_eval_expansions_core_simd4.c \
         FFT_M2X_X2L_aux_simd2.c \
         FFT_M2X_X2L_aux_simd4.c \
         FFT_M2X_X2L_cores_init.c \
@@ -73,11 +73,6 @@ clean:
 	rm -f -r $(ODIR)
 	rm -f $(GENERATED_FILES)
 
-#	rm -f $(ODIR)/*.o
-#	rm -f $(ODIR)/*.a
-#	rm -f $(ODIR)/*.lo
-#	rm -f $(ODIR)/*.la
-#	rm -f -r $(ODIR)/.libs
 
 odir:
 	if test ! -d $(ODIR)  ; then mkdir $(ODIR) ; fi
@@ -137,14 +132,14 @@ M2L.h: ../gen_M2L_h.py
 M2L.c: M2L.h
 	ln -s -f ../M2L.c M2L.c
 	
-core_gen_eval.c: gen_core_gen_eval.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_core_gen_eval.py > core_gen_eval.c
+gen_eval_expansions_core.c: gen_gen_eval_expansions_core.py ../gen_straightline_code.py
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_gen_eval_expansions_core.py > gen_eval_expansions_core.c
 	
-core_gen_eval_simd2.c: gen_core_gen_eval.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_core_gen_eval.py simd2 > core_gen_eval_simd2.c
+gen_eval_expansions_core_simd2.c: gen_gen_eval_expansions_core.py ../gen_straightline_code.py
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_gen_eval_expansions_core.py simd2 > gen_eval_expansions_core_simd2.c
 
-core_gen_eval_simd4.c: gen_core_gen_eval.py ../gen_straightline_code.py
-	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_core_gen_eval.py simd4 > core_gen_eval_simd4.c
+gen_eval_expansions_core_simd4.c: gen_gen_eval_expansions_core.py ../gen_straightline_code.py
+	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_gen_eval_expansions_core.py simd4 > gen_eval_expansions_core_simd4.c
 
 spherical_harmonics.c: gen_spherical_harmonics.py ../gen_straightline_code.py
 	PYTHONPATH="..:.:$(PYTHONPATH)" $(PYTHON) gen_spherical_harmonics.py > spherical_harmonics.c
@@ -206,8 +201,8 @@ NAMES = \
 	gen_neighbor2_list	\
 	M2L statistics 	\
 	periodic_lattice_M2L	\
-	gen_eval	\
-	core_gen_eval	\
+	gen_eval_expansions_base	\
+	gen_eval_expansions_core	\
 	bessel \
 	spherical_harmonics	\
 	spherical_harmonics_generic	\
@@ -224,8 +219,8 @@ NAMES = \
 NAMES_SIMD = \
 	ida_copy \
 	vec_ops \
-	gen_eval	\
-	core_gen_eval	\
+	gen_eval_expansions_base	\
+	gen_eval_expansions_core	\
 	bessel \
         math \
 	spherical_harmonics	\

@@ -1,5 +1,5 @@
-#ifndef _FMMV2D_H_
-#define _FMMV2D_H_
+#ifndef __FMMV2D_H_
+#define __FMMV2D_H_
 #include "fmmv_sys.h"
 
 int init_all(FmmvHandle *FMMV);
@@ -16,6 +16,12 @@ void direct_method_xp( unsigned int NParticles, _FLOAT_ particles[][2], _FLOAT_ 
         unsigned int NTargets, _FLOAT_ targets[][2], _FLOAT_ pot[], _FLOAT_ grad[][2], /* result of length NTarget */
         double beta, double *time, char **errorMessage);
 
+void direct_method_complex_xp( unsigned int NParticles, _FLOAT_ particles[][2],
+        _FLOAT_ complexCharges[][2], _FLOAT_ complexDipoleMoments[][2],
+        unsigned int NTargets, _FLOAT_ targets[][2], 
+        _FLOAT_ complexPotentials[][2],   _FLOAT_ complexGradients[][2],
+        double beta, double *time, char **errorMessage);
+
 float k0f(float x);
 float k1f(float x);
 float i0f(float x);
@@ -25,7 +31,7 @@ double k1(double x);
 double i0(double x);
 double i1(double x);
 
-#include<math.h> /* sqrt, sqrtf */
+#include<math.h> /* sqrt, sqrtf, etc. */
 #if (FMM_PRECISION==0)
   #define RECIP0(x) (1.0/(x))
   #define RECIP1(x) (1.0/(x))
@@ -52,6 +58,10 @@ double i1(double x);
   #define I12(x) (i1f(x))
   #define I1(x) I12(x)
   #define SQRT(x) sqrtf(x)
+  #define ATAN20(y, x) atan2f(y, x)
+  #define ATAN21(y, x) atan2f(y, x)
+  #define ATAN22(y, x) atan2f(y, x)
+  #define ATAN2(y, x) ATAN22(y, x)
 #else  
   #define RECIP0(x) (1.0/(x))
   #define RECIP1(x) (1.0/(x))
@@ -77,10 +87,13 @@ double i1(double x);
   #define I11(x) (i1(x))
   #define I12(x) (i1(x))
   #define I1(x) I12(x)
-  #define SQRT(x) sqrt(x)
+  #define ATAN20(y, x) atan2(y, x)
+  #define ATAN21(y, x) atan2(y, x)
+  #define ATAN22(y, x) atan2(y, x)
+  #define ATAN2(y, x) ATAN22(y, x)
 #endif
 
 
-#endif /* _FMMV2D_H_ */
+#endif /* __FMMV2D_H_ */
 
 

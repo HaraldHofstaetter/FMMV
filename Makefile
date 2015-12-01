@@ -60,12 +60,12 @@ TGZ_FILES = \
     2d/create_box.c \
     2d/direct_method_xp.c \
     2d/M2L_init.c \
-    2d/gen_eval.c \
-    2d/gen_eval_access.c \
-    2d/gen_eval_simd2.c \
-    2d/gen_eval_access_simd2.c \
-    2d/gen_eval_simd4.c \
-    2d/gen_eval_access_simd4.c \
+    2d/gen_eval_expansions_base.c \
+    2d/gen_eval_expansions.c \
+    2d/gen_eval_expansions_base_simd2.c \
+    2d/gen_eval_expansions_simd2.c \
+    2d/gen_eval_expansions_base_simd4.c \
+    2d/gen_eval_expansions_simd4.c \
     2d/eval_direct.c \
     2d/eval_direct_simd2.c \
     2d/eval_direct_simd4.c \
@@ -103,12 +103,12 @@ TGZ_FILES = \
     3d/build_tree.c \
     3d/create_box.c \
     3d/direct_method_xp.c \
-    3d/gen_eval.c \
-    3d/gen_eval_access.c \
-    3d/gen_eval_simd2.c \
-    3d/gen_eval_access_simd2.c \
-    3d/gen_eval_simd4.c \
-    3d/gen_eval_access_simd4.c \
+    3d/gen_eval_expansions_base.c \
+    3d/gen_eval_expansions.c \
+    3d/gen_eval_expansions_base_simd2.c \
+    3d/gen_eval_expansions_simd2.c \
+    3d/gen_eval_expansions_base_simd4.c \
+    3d/gen_eval_expansions_simd4.c \
     3d/eval_direct.c \
     3d/eval_direct_simd2.c \
     3d/eval_direct_simd4.c \
@@ -126,7 +126,7 @@ TGZ_FILES = \
     3d/fmmv_setup.py \
     3d/gen_adaptive_lists.c \
     3d/gen_adaptive_lists_st.c \
-    3d/gen_core_gen_eval.py \
+    3d/gen_gen_eval_core.py \
     3d/generic_fmm.c \
     3d/generic_fmm_ws2.c \
     3d/gen_FFT_M2X_X2L_aux.py \
