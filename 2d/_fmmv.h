@@ -87,6 +87,7 @@ double i1(double x);
   #define I11(x) (i1(x))
   #define I12(x) (i1(x))
   #define I1(x) I12(x)
+  #define SQRT(x) sqrt(x)
   #define ATAN20(y, x) atan2(y, x)
   #define ATAN21(y, x) atan2(y, x)
   #define ATAN22(y, x) atan2(y, x)

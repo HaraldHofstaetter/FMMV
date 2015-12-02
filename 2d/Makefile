@@ -112,6 +112,7 @@ M2L.c: gen_M2L.py
 NAMES = \
 	fmmv2d	\
         direct_method_xp \
+        direct_method_complex_xp \
 	ida		\
 	fmmv_common 	\
 	build_tree 	\

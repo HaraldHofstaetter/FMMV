@@ -226,12 +226,12 @@ void eval_direct(FmmvHandle *FMMV, Box *target, Box *source)
 	_FLOAT_ xi,yi;
 	#if(defined(access_mx))
 	_FLOAT_ mxj, myj;
-        _FLOAT_ m_x_re_over_r2j;
-        _FLOAT_ m_x_im_over_r2j;
+        _FLOAT_ mr_re_over_r2j;
+        _FLOAT_ mr_im_over_r2j;
 	#ifndef ST
 	_FLOAT_ mxi, myi;
-        _FLOAT_ m_x_re_over_r2i;
-        _FLOAT_ m_x_im_over_r2i;
+        _FLOAT_ mr_re_over_r2i;
+        _FLOAT_ mr_im_over_r2i;
 	#endif
 	#endif
 
@@ -350,11 +350,11 @@ void eval_direct(FmmvHandle *FMMV, Box *target, Box *source)
 	                #if(defined(access_qx))
                         x_over_r2 = x*one_over_r2;
                         y_over_r2 = y*one_over_r2;
-                        gradxi += qxj*x_over_r2 - qyj*y_over_r2;
-                        gradyi += qxj*y_over_r2 + qyj*x_over_r2;
+                        gradxi += qxj*x_over_r2 + qyj*y_over_r2;
+                        gradyi += qyj*x_over_r2 - qxj*y_over_r2;
 			#ifndef ST
-                        gradxj -= qxi*x_over_r2 - qyi*y_over_r2;
-                        gradyj -= qxi*y_over_r2 + qxi*y_over_r2;
+                        gradxj -= qxi*x_over_r2 + qyi*y_over_r2;
+                        gradyj -= qyi*x_over_r2 - qxi*y_over_r2;
                         #endif
                         #endif
                         #endif
@@ -364,27 +364,27 @@ void eval_direct(FmmvHandle *FMMV, Box *target, Box *source)
 
                         mxj = access_mx(j);
                         myj = access_my(j);
-			m_x_re_over_r2j = (x*mxj + y*myj)*one_over_r2;
-			m_x_im_over_r2j = (y*mxj - x*myj)*one_over_r2; /* TODO: CHECK SIGN!!!! */
+			mr_re_over_r2j = (x*mxj + y*myj)*one_over_r2;
+			mr_im_over_r2j = (x*myj - y*mxj)*one_over_r2; /* TODO: CHECK SIGN!!!! */
 	                #if(defined(access_potx))
-                        potxi += m_x_re_over_r2j;
-                        potyi += m_x_im_over_r2j;
+                        potxi += mr_re_over_r2j;
+                        potyi += mr_im_over_r2j;
                         #endif
-                        #if(defined(access_gradx))
-                        gradxi += (mxj - 2.0*(x*m_x_re_over_r2j-y*m_x_im_over_r2j))*one_over_r2;
-                        gradyi += (myj - 2.0*(y*m_x_re_over_r2j+x*m_x_im_over_r2j))*one_over_r2;
+                        #if(defined(access_gradx)) 
+                        gradxi -= 2.0*(x*mr_re_over_r2j+y*mr_im_over_r2j)*one_over_r2;
+                        gradyi -= 2.0*(x*mr_im_over_r2j-y*mr_re_over_r2j)*one_over_r2;
                         #endif
 
 			#ifndef ST
-			m_x_re_over_r2i = (x*mxi + y*myi)*one_over_r2;
-			m_x_im_over_r2i = (x*mxi - y*myi)*one_over_r2; /* TODO: CHECK SIGN!!!! */
+			mr_re_over_r2i = (x*mxi + y*myi)*one_over_r2;
+			mr_im_over_r2i = (x*myi - y*mxi)*one_over_r2; /* TODO: CHECK SIGN!!!! */
 	                #if(defined(access_potx))
-                        potxj -= m_x_re_over_r2i;
-                        potyj -= m_x_im_over_r2i;
+                        potxj -= mr_re_over_r2i;
+                        potyj -= mr_im_over_r2i;
                         #endif
-                        #if(defined(access_gradx)) 
-                        gradxj += (mxi - 2.0*(x*m_x_re_over_r2i-y*m_x_im_over_r2i))*one_over_r2;
-                        gradyj += (myi - 2.0*(y*m_x_re_over_r2i+x*m_x_im_over_r2i))*one_over_r2;
+                        #if(defined(access_gradx))  
+                        gradxj -= 2.0*(x*mr_re_over_r2i+y*mr_im_over_r2i)*one_over_r2;
+                        gradyj -= 2.0*(x*mr_im_over_r2i-y*mr_re_over_r2i)*one_over_r2;
                         #endif
 			#endif
 
