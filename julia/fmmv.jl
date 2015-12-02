@@ -3,6 +3,57 @@ module fmmv
 export fmmv2d #, fmmv2d_initialize, fmmv2d_evaluate, fmmv2d_finalize
 export fmmv_complex2d #, fmmv_complex2d_initialize, fmmv_complex2d_evaluate, fmmv_complex2d_finalize
 export fmmv3d #, fmmv3d_initialize, fmmv3d_evaluate, fmmv3d_finalize
+export FmmvOptions, fmmvGetDefaultOptions2d, fmmvGetDefaultOptions3d
+
+type FmmvOptions 
+	beta::Cdouble # default: 0 
+
+	pM::Cint # default:6 
+	pL::Cint # default:6 
+	s::Cint 
+
+	ws::Cint #  default: 1 
+	reducedScheme::Cint
+
+	scale::Cdouble # default: 1 
+	splitThreshold::Cint  
+	splitTargetThreshold::Cint
+	levels::Cint
+	directEvalThreshold::Cint
+	periodicBoundaryConditions::Cint # default: 0 
+	extrinsicCorrection::Cint # default: 0 
+	useHilbertOrder::Cint # default: 0, i.e. use Molton order 
+	directEvalAccuracy::Cint # default: 2 (double) resp. 1 (single) 
+	useFarfieldNearfieldThreads::Cint # default: 0 
+	
+	PAPIeventSet::Cint
+end
+
+function Base.show(io::IO, opt::FmmvOptions)
+    for x in fieldnames(FmmvOptions)
+        println(io, x, ": ", opt.(x))
+    end
+end    
+
+
+function fmmvGetDefaultOptions2d(T::Type{Float32}) 
+     ccall((:fmmvGetDefaultOptions, :libfmmv2df), FmmvOptions, () )
+end        
+
+function fmmvGetDefaultOptions2d(T::Type{Float64}) 
+      ccall((:fmmvGetDefaultOptions, :libfmmv2d), FmmvOptions, () )
+end   
+
+function fmmvGetDefaultOptions3d(T::Type{Float32}) 
+     ccall((:fmmvGetDefaultOptions, :libfmmv3df), FmmvOptions, () )
+end        
+
+function fmmvGetDefaultOptions3d(T::Type{Float64}) 
+     ccall((:fmmvGetDefaultOptions, :libfmmv3d), FmmvOptions, () )
+end    
+
+
+
 
 
 function fmmv2d{T<:Union{Float32,Float64}}(sources::Array{T, 2},
@@ -10,6 +61,7 @@ function fmmv2d{T<:Union{Float32,Float64}}(sources::Array{T, 2},
                    dipoleMoments::Array{T, 2} = Array(T,0,0),
                    targets::Array{T, 2} = Array(T,0,0),
                    computeGradients::Bool = false,
+                   options::FmmvOptions = fmmvGetDefaultOptions2d(T),
                    getStatistics::Bool = false)
     dim = 2               
     if size(sources)[1]!=dim
@@ -47,17 +99,17 @@ function fmmv2d{T<:Union{Float32,Float64}}(sources::Array{T, 2},
     if T==Float32
         ccall((:fmmv2df, :libfmmv2df), 
             Void, (Cint, Ptr{T}, Ptr{T}, Ptr{T}, Cint, Ptr{T}, Ptr{T}, Ptr{T}, 
-            Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
+            Ptr{FmmvOptions}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
             nSources, sources, charges, (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL),
-            NULL, NULL, &err)
+            &options, NULL, &err)
     else            
         ccall((:fmmv2d, :libfmmv2d), 
             Void, (Cint, Ptr{T}, Ptr{T}, Ptr{T}, Cint, Ptr{T}, Ptr{T}, Ptr{T},
-            Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
+            Ptr{FmmvOptions}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
             nSources, sources, charges, (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL), 
-            NULL, NULL, &err)
+            &options, NULL, &err)
     end 
 
     if computeGradients
@@ -73,6 +125,7 @@ function fmmv3d{T<:Union{Float32,Float64}}(sources::Array{T, 2},
                    dipoleMoments::Array{T, 2} = Array(T,0,0),
                    targets::Array{T, 2} = Array(T,0,0),
                    computeGradients::Bool = false,
+                   options::FmmvOptions = fmmvGetDefaultOptions2d(T),
                    getStatistics::Bool = false)
     dim = 3               
     if size(sources)[1]!=dim
@@ -110,17 +163,17 @@ function fmmv3d{T<:Union{Float32,Float64}}(sources::Array{T, 2},
     if T==Float32
         ccall((:fmmv3df, :libfmmv3df), 
             Void, (Cint, Ptr{T}, Ptr{T}, Ptr{T}, Cint, Ptr{T}, Ptr{T}, Ptr{T}, 
-            Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
+            Ptr{FmmvOptions}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
             nSources, sources, charges, (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL),
-            NULL, NULL, &err)
+            &options, NULL, &err)
     else            
         ccall((:fmmv3d, :libfmmv3d), 
             Void, (Cint, Ptr{T}, Ptr{T}, Ptr{T}, Cint, Ptr{T}, Ptr{T}, Ptr{T},
-            Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
+            Ptr{FmmvOptions}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
             nSources, sources, charges, (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL), 
-            NULL, NULL, &err)
+            &options, NULL, &err)
     end 
 
     if computeGradients
@@ -136,6 +189,7 @@ function fmmv_complex2d{T<:Union{Float32,Float64}}(sources::Array{Complex{T}, 1}
                    dipoleMoments::Array{Complex{T}, 1} = Array(Complex{T},0),
                    targets::Array{Complex{T}, 1} = Array(Complex{T},0),
                    computeGradients::Bool = false,
+                   options::FmmvOptions = fmmvGetDefaultOptions2d(T),
                    getStatistics::Bool = false)
     nSources = length(sources)
     empty = Array(Complex{T},0)
@@ -169,17 +223,17 @@ function fmmv_complex2d{T<:Union{Float32,Float64}}(sources::Array{Complex{T}, 1}
     if T==Float32
         ccall((:fmmv_complex2df, :libfmmv2df), 
             Void, (Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}}, Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}}, 
-            Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
+            Ptr{FmmvOptions}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
             nSources, sources, (withCharges?charges : NULL), (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL),
-            NULL, NULL, &err)
+            &options, NULL, &err)
     else            
         ccall((:fmmv_complex2d, :libfmmv2d), 
             Void, (Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}}, Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}},
-            Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
+            Ptr{FmmvOptions}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
             nSources, sources, (withCharges?charges : NULL), (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL), 
-            NULL, NULL, &err)
+            &options, NULL, &err)
     end 
 
     if computeGradients
