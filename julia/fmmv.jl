@@ -131,17 +131,20 @@ function fmmv3d{T<:Union{Float32,Float64}}(sources::Array{T, 2},
 end    
 
 
-function fmmv_complex2d{T<:Union{Float32,Float64}}(sources::Array{Complex{T}, 1},
-                   charges::Array{Complex{T}, 1};
+function fmmv_complex2d{T<:Union{Float32,Float64}}(sources::Array{Complex{T}, 1};
+                   charges::Array{Complex{T}, 1} = Array(Complex{T},0),
                    dipoleMoments::Array{Complex{T}, 1} = Array(Complex{T},0),
                    targets::Array{Complex{T}, 1} = Array(Complex{T},0),
                    computeGradients::Bool = false,
                    getStatistics::Bool = false)
     nSources = length(sources)
-    if length(charges) != nSources
-        throw(DimensionMismatch("expected length(charges) = $(nSources), got $(length(charges))"))
-    end
     empty = Array(Complex{T},0)
+    withCharges = ( charges!=empty )
+    if withCharges
+        if length(charges) != nSources
+            throw(DimensionMismatch("expected length(charges) = $(nSources), got $(length(charges))"))
+        end
+    end    
     withDipoleMoments = ( dipoleMoments!=empty )
     if withDipoleMoments
         if length(dipoleMoments) != nSources
@@ -167,14 +170,14 @@ function fmmv_complex2d{T<:Union{Float32,Float64}}(sources::Array{Complex{T}, 1}
         ccall((:fmmv_complex2df, :libfmmv2df), 
             Void, (Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}}, Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}}, 
             Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
-            nSources, sources, charges, (withDipoleMoments?dipoleMoments : NULL),
+            nSources, sources, (withCharges?charges : NULL), (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL),
             NULL, NULL, &err)
     else            
         ccall((:fmmv_complex2d, :libfmmv2d), 
             Void, (Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}}, Cint, Ptr{Complex{T}}, Ptr{Complex{T}}, Ptr{Complex{T}},
             Ptr{Void}, Ptr{Void}, Ptr{Ptr{Cchar}} ),
-            nSources, sources, charges, (withDipoleMoments?dipoleMoments : NULL),
+            nSources, sources, (withCharges?charges : NULL), (withDipoleMoments?dipoleMoments : NULL),
             nTargets, (withTargets?targets : NULL), pot, (computeGradients?grad : NULL), 
             NULL, NULL, &err)
     end 

@@ -210,7 +210,7 @@ void eval_L_base_complex(FmmvHandle *FMMV, Box *box, _FLOAT_ z_re, _FLOAT_ z_im,
 		f_re = h_re;
 	    }
 	    *dx = scale*f_re;
-	    *dy = -scale*f_im;
+	    *dy = scale*f_im;
 	}
 }
 
