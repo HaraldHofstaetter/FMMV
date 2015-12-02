@@ -3,7 +3,7 @@ import fmmv
 
 n=10000
 
-sources = rand(2, n)
+sources = rand(3, n)
 charges = rand(n)
 
-pot = fmmv.fmmv2d(sources, charges)       
+pot = fmmv.fmmv3d(sources, charges)       
