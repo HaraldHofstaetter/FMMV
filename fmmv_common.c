@@ -94,6 +94,7 @@ char* fmmv_initialize(FmmvHandle **fh, struct FmmvOptions *options, struct FmmvS
 	if (!FMMV) goto _err;
 
 	/* TODO: check options */
+	FMMV->beta = options->beta;
 	FMMV->pM = options->pM;
 	FMMV->pL = options->pL;
 	FMMV->s_eps = options->s;

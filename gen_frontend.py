@@ -438,7 +438,6 @@ def gen_fmmv_initialize():
 			print "\t\t}"
 			print "\t}"	
 		print
-        	print "\tFMMV->beta = options->beta; "
 		print "\terr = fmmv_initialize(&FMMV, options, statistics);"
 		print "\tif (err) goto _err;"
 		print
