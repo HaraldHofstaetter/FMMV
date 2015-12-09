@@ -583,6 +583,7 @@ void eval_direct(FmmvHandle *FMMV, Box *target, Box *source)
 }
 
 
+// TODO: better handling of simd-exponential function
 // TODO: other accuracies for exp ...
 // NOTE: order of vector components!
 #if (FMM_PRECISION==0)

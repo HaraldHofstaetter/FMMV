@@ -30,6 +30,7 @@
    #include"simd2d.h"
 #endif
 
+// TODO: better handling of simd-exponential function
 // NOTE: order of vector components!
 #if (FMM_PRECISION==0)
 #define V2_EXP(x) V2_SET(expf(((V2_BASETYPE*) &(x))[1]), \

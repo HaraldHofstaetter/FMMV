@@ -16,10 +16,9 @@ name = {
 	}
         
 simd_vector_length = {
-	"float":  4, 
-	"double": 2,
-	#"float":  1, 
-	#"double": 1,
+	"float":  4, # for sse
+	"double": 2, # for sse2
+	# "double": 4, # for avx
 	}
         
 p_max = { 

@@ -563,12 +563,26 @@ void eval_direct(FmmvHandle *FMMV, Box *target, Box *source)
 
 
 //*******************************************************************************
+// TODO: better handling of simd-exponential function
+#if (FMM_PRECISION==0)
 __m128 exp_ps(__m128 x); 
 __m128 exp0_ps(__m128 x); 
 #define V4_EXP2(x) exp_ps(x)
 
 #define V4_EXP1(x) V4_EXP2(x)
 #define V4_EXP0(x) exp0_ps(x)
+
+#else
+
+#define V4_EXP2(x) V4_SET(exp(((V4_BASETYPE*) &(x))[3]), \
+                          exp(((V4_BASETYPE*) &(x))[2]), \
+                          exp(((V4_BASETYPE*) &(x))[1]), \
+                          exp(((V4_BASETYPE*) &(x))[0]))
+
+#define V4_EXP1(x) V4_EXP2(x)
+#define V4_EXP0(x) V4_EXP2(x)
+
+#endif
 
 #ifdef PERIODIC
 void eval_direct_yukawa_periodic(FmmvHandle *FMMV, Box *target, Box *source, _FLOAT_ dx0, _FLOAT_ dy0, _FLOAT_ dz0)

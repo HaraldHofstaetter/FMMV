@@ -52,10 +52,6 @@ function fmmvGetDefaultOptions3d(T::Type{Float64})
      ccall((:fmmvGetDefaultOptions, :libfmmv3d), FmmvOptions, () )
 end    
 
-
-
-
-
 function fmmv2d{T<:Union{Float32,Float64}}(sources::Array{T, 2},
                    charges::Array{T, 1};
                    dipoleMoments::Array{T, 2} = Array(T,0,0),

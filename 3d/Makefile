@@ -260,16 +260,16 @@ $(ODIR)/%_double.o: %.c
 
 
 OBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES))) \
-	     $(addprefix $(ODIR)/, $(addsuffix _simd4_float.o, $(NAMES_ACCESS) $(NAMES_SIMD)))
+	     $(addprefix $(ODIR)/, $(addsuffix $(SUFFIX_SIMD_FLOAT).o, $(NAMES_ACCESS) $(NAMES_SIMD)))
 
 LOBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.lo, $(NAMES))) \
-	      $(addprefix $(ODIR)/, $(addsuffix _simd4_float.lo, $(NAMES_ACCESS) $(NAMES_SIMD)))
+	      $(addprefix $(ODIR)/, $(addsuffix $(SUFFIX_SIMD_FLOAT).lo, $(NAMES_ACCESS) $(NAMES_SIMD)))
 
 OBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.o, $(NAMES))) \
-	      $(addprefix $(ODIR)/, $(addsuffix _simd2_double.o, $(NAMES_ACCESS) $(NAMES_SIMD)))
+	      $(addprefix $(ODIR)/, $(addsuffix  $(SUFFIX_SIMD_DOUBLE).o, $(NAMES_ACCESS) $(NAMES_SIMD)))
 
 LOBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.lo, $(NAMES))) \
-	       $(addprefix $(ODIR)/, $(addsuffix _simd2_double.lo, $(NAMES_ACCESS) $(NAMES_SIMD)))
+	       $(addprefix $(ODIR)/, $(addsuffix  $(SUFFIX_SIMD_DOUBLE).lo, $(NAMES_ACCESS) $(NAMES_SIMD)))
 
 #OBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES))) \
 #	     $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES_ACCESS) $(NAMES_NOSIMD)))

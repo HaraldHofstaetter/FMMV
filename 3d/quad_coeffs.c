@@ -3117,8 +3117,10 @@ void init_quad_coeffs(FmmvHandle *FMMV)
 	for (i=0; i<FMMV->s_eps; i++) {
 		FMMV->s_exp += FMMV->M[i];
 	}
-#if (FMM_PRECISION==0)
-	/* for single precision s_exp must be divisible by 8 */
+//#if (FMM_PRECISION==0)
+	/* for simd2 s_exp must be divisible by 4 */
+	/* for simd4 s_exp must be divisible by 8 */
+        /* let it be divisible by 8 */
 	if (FMMV->s_exp%8) {
 		for (i=0; i<FMMV->s_exp; i++) {
 			if (FMMV->M[i]==4) {
@@ -3128,7 +3130,7 @@ void init_quad_coeffs(FmmvHandle *FMMV)
 			break;
 		}
 	}
-#endif
+//#endif
 
 }
 

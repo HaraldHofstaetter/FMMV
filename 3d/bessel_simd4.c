@@ -57,8 +57,16 @@
 */
 
 //#include"sse_mathfun.h"
+#if (FMM_PRECISION==0)
 __m128 exp_ps(__m128 x); 
 #define V4_EXP(x) exp_ps(x)
+#else
+#define V4_EXP(x) V4_SET(exp(((V4_BASETYPE*) &(x))[3]), \
+                          exp(((V4_BASETYPE*) &(x))[2]), \
+                          exp(((V4_BASETYPE*) &(x))[1]), \
+                          exp(((V4_BASETYPE*) &(x))[0]))
+#endif                          
+
 
 V4_TYPE V4_SINH(V4_TYPE x)
 {
