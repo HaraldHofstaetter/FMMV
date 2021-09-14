@@ -26,6 +26,8 @@
 
 #include<xmmintrin.h>
 
+#define FMM_SIMD_ALIGNMENT (sizeof(_FLOAT_)*FMM_SIMD_VECTOR_LENGTH)
+
 /*
 void* _mm_malloc(size_t size, size_t alignment); 
 void _mm_free(void * ptr);
@@ -33,13 +35,13 @@ void _mm_free(void * ptr);
 
 #undef SIMD_ALIGN
 #ifdef _MSC_VER
-  #define SIMD_ALIGN __declspec(align(16))
+  #define SIMD_ALIGN __declspec(align(FMM_SIMD_ALIGNMENT))
 #else
-  #define SIMD_ALIGN __attribute__ ((aligned(16)))
+  #define SIMD_ALIGN __attribute__ ((aligned(FMM_SIMD_ALIGNMENT)))
 #endif
 
 #undef FMMV_MALLOC
-#define FMMV_MALLOC(FMMV, n) _mm_malloc(n, 16); \
+#define FMMV_MALLOC(FMMV, n) _mm_malloc(n, FMM_SIMD_ALIGNMENT); \
         FMMV->allocatedMemory+=(n); \
         if (FMMV->allocatedMemory>FMMV->maxAllocatedMemory) \
                 FMMV->maxAllocatedMemory=FMMV->allocatedMemory;
