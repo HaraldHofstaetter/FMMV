@@ -17,7 +17,7 @@
 	#define FMM_P_MAX 30
 	#define FMM_S_EPS_MAX 30
 	#define FMM_S_EXP_MAX 2400
-	#define FMM_SIMD_VECTOR_LENGTH 2
+	#define FMM_SIMD_VECTOR_LENGTH 4
 #endif
 
 #define FMM_STANDARD 0
@@ -39,11 +39,11 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
-	double pot[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
+	double pot[4];
 } _DATA_standard_V0_t;
 
 typedef struct {
@@ -75,14 +75,14 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
-	double mx[2];
-	double my[2];
-	double mz[2];
-	double pot[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
+	double mx[4];
+	double my[4];
+	double mz[4];
+	double pot[4];
 } _DATA_dipole_V0_t;
 
 typedef struct {
@@ -114,14 +114,14 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
-	double pot[2];
-	double gradx[2];
-	double grady[2];
-	double gradz[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
+	double pot[4];
+	double gradx[4];
+	double grady[4];
+	double gradz[4];
 } _DATA_grad_V0_t;
 
 typedef struct {
@@ -156,17 +156,17 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
-	double mx[2];
-	double my[2];
-	double mz[2];
-	double pot[2];
-	double gradx[2];
-	double grady[2];
-	double gradz[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
+	double mx[4];
+	double my[4];
+	double mz[4];
+	double pot[4];
+	double gradx[4];
+	double grady[4];
+	double gradz[4];
 } _DATA_dipole_grad_V0_t;
 
 typedef struct {
@@ -202,17 +202,17 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
 } _DATA_standard_ST_V0_t;
 
 typedef struct {
-	double tx[2];
-	double ty[2];
-	double tz[2];
-	double pot[2];
+	double tx[4];
+	double ty[4];
+	double tz[4];
+	double pot[4];
 } _DATA_standard_ST_V1_t;
 
 typedef struct {
@@ -252,20 +252,20 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
-	double mx[2];
-	double my[2];
-	double mz[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
+	double mx[4];
+	double my[4];
+	double mz[4];
 } _DATA_dipole_ST_V0_t;
 
 typedef struct {
-	double tx[2];
-	double ty[2];
-	double tz[2];
-	double pot[2];
+	double tx[4];
+	double ty[4];
+	double tz[4];
+	double pot[4];
 } _DATA_dipole_ST_V1_t;
 
 typedef struct {
@@ -305,20 +305,20 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
 } _DATA_grad_ST_V0_t;
 
 typedef struct {
-	double tx[2];
-	double ty[2];
-	double tz[2];
-	double pot[2];
-	double gradx[2];
-	double grady[2];
-	double gradz[2];
+	double tx[4];
+	double ty[4];
+	double tz[4];
+	double pot[4];
+	double gradx[4];
+	double grady[4];
+	double gradz[4];
 } _DATA_grad_ST_V1_t;
 
 typedef struct {
@@ -361,23 +361,23 @@ typedef struct {
 #elif (FMM_PRECISION==1)
 
 typedef struct {
-	double x[2];
-	double y[2];
-	double z[2];
-	double q[2];
-	double mx[2];
-	double my[2];
-	double mz[2];
+	double x[4];
+	double y[4];
+	double z[4];
+	double q[4];
+	double mx[4];
+	double my[4];
+	double mz[4];
 } _DATA_dipole_grad_ST_V0_t;
 
 typedef struct {
-	double tx[2];
-	double ty[2];
-	double tz[2];
-	double pot[2];
-	double gradx[2];
-	double grady[2];
-	double gradz[2];
+	double tx[4];
+	double ty[4];
+	double tz[4];
+	double pot[4];
+	double gradx[4];
+	double grady[4];
+	double gradz[4];
 } _DATA_dipole_grad_ST_V1_t;
 
 typedef struct {
