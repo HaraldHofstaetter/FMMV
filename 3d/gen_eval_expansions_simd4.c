@@ -137,7 +137,7 @@ void gen_M(FmmvHandle *FMMV, Box *box)
 	V4_TYPE x, y, z, q;
 	V4_BASETYPE x_b, y_b, z_b, q_b;
 	V4_TYPE bx, by, bz;
-	int i, i0, i1, ii, ii0, ii1, iii;
+	int i, i0, i1, ii, ii0, ii1, iii, m;
 	V4_TYPE mx, my, mz;
 	V4_BASETYPE mx_b, my_b, mz_b;
 
@@ -161,51 +161,53 @@ void gen_M(FmmvHandle *FMMV, Box *box)
 	ii1 = i1>>2;
 
 	for (ii=ii0; ii<ii1; ii++ ) {
-		x = V4_SUB(V4_LOAD(access_x(ii)), bx);
-		y = V4_SUB(V4_LOAD(access_y(ii)), by);
-		z = V4_SUB(V4_LOAD(access_z(ii)), bz);
-		q = V4_LOAD(access_q(ii));
+    	    x = V4_SUB(V4_LOAD(access_x(ii)), bx);
+	    y = V4_SUB(V4_LOAD(access_y(ii)), by);
+	    z = V4_SUB(V4_LOAD(access_z(ii)), bz);
+	    q = V4_LOAD(access_q(ii));
 	#if ((FMM_KIND==FMM_DIPOLE)||(FMM_KIND==FMM_DIPOLE_GRAD) \
  	   ||(FMM_KIND==FMM_ST_DIPOLE)||(FMM_KIND==FMM_ST_DIPOLE_GRAD))
-		mx = V4_LOAD(access_mx(ii));
-		my = V4_LOAD(access_my(ii));
-		mz = V4_LOAD(access_mz(ii));
+	    mx = V4_LOAD(access_mx(ii));
+	    my = V4_LOAD(access_my(ii));
+	    mz = V4_LOAD(access_mz(ii));
         #endif
-                gen_M_base_simd4(FMMV, box, x, y, z, q, mx, my, mz, DIPOLE);
+            gen_M_base_simd4(FMMV, box, x, y, z, q, mx, my, mz, DIPOLE);
 	}
 	
-	if (i0&3) {
-	    ii0--; 	
-	    iii = (ii0==ii1 ? i1&3 : 4);
-	    for (i=i0&3; i<iii; i++) {
-		x_b = access_x(ii0)[i] - box->x;
-		y_b = access_y(ii0)[i] - box->y;
-		z_b = access_z(ii0)[i] - box->z;
-		q_b = access_q(ii0)[i];
+        m = i0&3; 
+        ii = ii0-1;
+        if (m) {
+	    x = V4_SUB(V4_LOAD_LEFT(access_x(ii), m), bx);
+	    y = V4_SUB(V4_LOAD_LEFT(access_y(ii), m), by);
+	    z = V4_SUB(V4_LOAD_LEFT(access_z(ii), m), bz);
+	    q = V4_LOAD_LEFT0(access_q(ii), m);
 	#if ((FMM_KIND==FMM_DIPOLE)||(FMM_KIND==FMM_DIPOLE_GRAD) \
  	   ||(FMM_KIND==FMM_ST_DIPOLE)||(FMM_KIND==FMM_ST_DIPOLE_GRAD))
-		mx_b = access_mx(ii0)[i];
-		my_b = access_my(ii0)[i];
-		mz_b = access_mz(ii0)[i];
+	    mx = V4_LOAD_LEFT0(access_mx(ii), m);
+	    my = V4_LOAD_LEFT0(access_my(ii), m);
+	    mz = V4_LOAD_LEFT0(access_mz(ii), m);
         #endif
-                gen_M_base(FMMV, box, x_b, y_b, z_b, q_b, mx_b, my_b, mz_b, DIPOLE);
-	     }
-	     if (ii0==ii1) return;
-	}
+            gen_M_base_simd4(FMMV, box, x, y, z, q, mx, my, mz, DIPOLE);
 
-	for (i=0; i<(i1&3); i++) {
-		x_b = access_x(ii1)[i] - box->x;
-		y_b = access_y(ii1)[i] - box->y;
-		z_b = access_z(ii1)[i] - box->z;
-		q_b = access_q(ii1)[i];
+	    if (ii0==ii1) return;
+        }
+
+        m = i1&3; 
+        ii = ii1;
+        if (m) {
+	    x = V4_SUB(V4_LOAD_RIGHT(access_x(ii), m), bx);
+	    y = V4_SUB(V4_LOAD_RIGHT(access_y(ii), m), by);
+	    z = V4_SUB(V4_LOAD_RIGHT(access_z(ii), m), bz);
+	    q = V4_LOAD_RIGHT0(access_q(ii), m);
 	#if ((FMM_KIND==FMM_DIPOLE)||(FMM_KIND==FMM_DIPOLE_GRAD) \
  	   ||(FMM_KIND==FMM_ST_DIPOLE)||(FMM_KIND==FMM_ST_DIPOLE_GRAD))
-		mx_b = access_mx(ii1)[i];
-		my_b = access_my(ii1)[i];
-		mz_b = access_mz(ii1)[i];
+	    mx = V4_LOAD_RIGHT0(access_mx(ii), m);
+	    my = V4_LOAD_RIGHT0(access_my(ii), m);
+	    mz = V4_LOAD_RIGHT0(access_mz(ii), m);
         #endif
-                gen_M_base(FMMV, box, x_b, y_b, z_b, q_b, mx_b, my_b, mz_b, DIPOLE);
-	}
+            gen_M_base_simd4(FMMV, box, x, y, z, q, mx, my, mz, DIPOLE);
+        }
+
 }	
 
 

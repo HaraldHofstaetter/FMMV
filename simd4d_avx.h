@@ -134,4 +134,73 @@ static __inline __m256d V4_HORIZADD1(__m256d x)
         //return _mm256_castpd128_pd256(_mm_hadd_pd(x128, _mm_setzero_pd()));   //0x55));
 }
 
+
+static __inline __m256d V4_LOAD_LEFT(void *i, int mask)
+{
+    __m256d x = _mm256_load_pd(i);
+    switch (mask) {
+        case 0:
+            return x;
+        case 1:
+            return _mm256_permute_pd(x, 0b1011);
+        case 2:
+            return _mm256_permute_pd(_mm256_permute2f128_pd(x, x, 0b00010001 ), 0b1000);
+        case 3: 
+            return _mm256_permute_pd(_mm256_permute2f128_pd(x, x, 0b00010001 ), 0b1111);
+    }    
+}
+
+
+static __inline __m256d V4_LOAD_LEFT0(void *i, int mask)
+{
+    switch (mask) {
+        case 0:
+            return _mm256_load_pd(i);
+        case 1: {
+            __m256i m = {(u_int64_t) 0x0, (u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0xFFFFFFFFFFFFFFFF};
+            return _mm256_maskload_pd(i, m); }
+        case 2: {
+            __m256i m = {(u_int64_t) 0x0, (u_int64_t) 0x0, (u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0xFFFFFFFFFFFFFFFF};
+            return _mm256_maskload_pd(i, m); }
+        case 3: {
+            __m256i m = {(u_int64_t) 0x0, (u_int64_t) 0x0, (u_int64_t) 0x0, (u_int64_t) 0xFFFFFFFFFFFFFFFF};
+            return _mm256_maskload_pd(i, m); }
+    }    
+}
+
+
+static __inline __m256d V4_LOAD_RIGHT(void *i, int mask)
+{
+    __m256d x = _mm256_load_pd(i);
+    switch (mask) {
+        case 0:
+            return x;
+        case 1:
+            return _mm256_permute_pd(_mm256_permute2f128_pd(x, x, 0b00100010 ), 0b0000);
+        case 2:
+            return _mm256_permute_pd(_mm256_permute2f128_pd(x, x, 0b00100010 ), 0b1110);
+        case 3:
+            return _mm256_permute_pd(x, 0b0010);
+    }    
+}
+
+
+static __inline __m256d V4_LOAD_RIGHT0(void *i, int mask)
+{
+    switch (mask) {
+        case 0: 
+            return _mm256_load_pd(i);
+        case 1: {
+            __m256i m = {(u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0x0, (u_int64_t) 0x0, (u_int64_t) 0x0}; 
+            return _mm256_maskload_pd(i, m); }
+        case 2: { 
+            __m256i m = {(u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0x0, (u_int64_t) 0x0}; 
+            return _mm256_maskload_pd(i, m); }
+        case 3: {
+            __m256i m = {(u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0xFFFFFFFFFFFFFFFF,  (u_int64_t) 0x0};
+            return _mm256_maskload_pd(i, m); }
+    }    
+}
+
+
 #endif /* _SIMD4D_H_ */

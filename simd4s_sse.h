@@ -106,6 +106,7 @@ return _mm_add_ps(_mm_shuffle_ps(h0, h1, 0xDD), _mm_shuffle_ps(h0, h1, 0x88));
 }
 #endif
 
+
 static __inline __m128 V4_HORIZADD1(__m128 x)
 {
 	return _mm_add_ss(x, 
@@ -113,6 +114,78 @@ static __inline __m128 V4_HORIZADD1(__m128 x)
 	_mm_add_ss(_mm_shuffle_ps(x, x, _MM_SHUFFLE(1,1,1,1)),	
         _mm_shuffle_ps(x, x, _MM_SHUFFLE(3,3,3,3)))));
    
-}	
+}
+
+
+static __inline __m128 V4_LOAD_LEFT(void *i, int mask)
+{
+    __m128 x = _mm_load_ps(i);
+    switch (mask) {
+        case 0:
+            return x;
+        case 1:
+            return _mm_shuffle_ps(x, x, _MM_SHUFFLE(3,2,1,1));
+        case 2:
+            return _mm_shuffle_ps(x, x, _MM_SHUFFLE(3,2,2,2));
+        case 3:
+            return _mm_shuffle_ps(x, x, _MM_SHUFFLE(3,3,3,3));
+    }    
+}
+
+
+static __inline __m128 V4_LOAD_LEFT0(void *i, int mask)
+{
+    __m128 x = _mm_load_ps(i);
+    switch (mask) {
+        case 0:
+            return x;
+        case 1: {
+            __m128i m = {(u_int64_t) 0xFFFFFFFF00000000, (u_int64_t) 0xFFFFFFFFFFFFFFFF}; 
+            return _mm_and_ps(x, (__m128) m); }
+        case 2: {
+            __m128i m = {(u_int64_t) 0x0, (u_int64_t) 0xFFFFFFFFFFFFFFFF}; 
+            return _mm_and_ps(x, (__m128) m); }
+        case 3: {
+            __m128i m = {(u_int64_t) 0x0, (u_int64_t) 0xFFFFFFFF00000000}; 
+            return _mm_and_ps(x, (__m128) m); }
+    }    
+}
+
+
+static __inline __m128 V4_LOAD_RIGHT(void *i, int mask)
+{
+    __m128 x = _mm_load_ps(i);
+    switch (mask) {
+        case 0:
+            return x;
+        case 1:
+            return _mm_shuffle_ps(x, x, _MM_SHUFFLE(0,0,0,0));
+        case 2:
+            return _mm_shuffle_ps(x, x, _MM_SHUFFLE(1,1,1,0));
+        case 3:
+            return _mm_shuffle_ps(x, x, _MM_SHUFFLE(2,2,1,0));
+    }    
+}
+
+
+static __inline __m128 V4_LOAD_RIGHT0(void *i, int mask)
+{
+    __m128 x = _mm_load_ps(i);
+    switch (mask) {
+        case 0: 
+            return x;
+        case 1: {
+            __m128i m = {(u_int64_t) 0x00000000FFFFFFFF, (u_int64_t) 0x0}; 
+            return _mm_and_ps(x, (__m128) m); }
+        case 2: {
+            __m128i m = {(u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0x0}; 
+            return _mm_and_ps(x, (__m128) m); }
+        case 3: {
+            __m128i m = {(u_int64_t) 0xFFFFFFFFFFFFFFFF, (u_int64_t) 0x00000000FFFFFFFF}; 
+            return _mm_and_ps(x, (__m128) m); }
+    }    
+}
+
+
 
 #endif /* _SIMD4S_H_ */
