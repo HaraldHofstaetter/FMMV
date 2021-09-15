@@ -259,29 +259,42 @@ $(ODIR)/%_double.o: %.c
 	$(LIBTOOL_COMPILE) -c -DFMM_PRECISION=1 $(CFLAGS) -I..  $< -o $@
 
 
+#Note: flags _USE_SIMD_FLOAT_1, _USE_SIMD_DOUBLE_ are defined in Makefile2
+
+ifeq ($(_USE_SIMD_FLOAT_),1)
+
 OBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES))) \
 	     $(addprefix $(ODIR)/, $(addsuffix $(SUFFIX_SIMD_FLOAT).o, $(NAMES_ACCESS) $(NAMES_SIMD)))
 
 LOBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.lo, $(NAMES))) \
 	      $(addprefix $(ODIR)/, $(addsuffix $(SUFFIX_SIMD_FLOAT).lo, $(NAMES_ACCESS) $(NAMES_SIMD)))
 
+else
+
+OBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES))) \
+	     $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
+
+LOBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.lo, $(NAMES))) \
+	      $(addprefix $(ODIR)/, $(addsuffix _float.lo, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
+    
+endif
+
+ifeq ($(_USE_SIMD_DOUBLE_),1)
+
 OBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.o, $(NAMES))) \
 	      $(addprefix $(ODIR)/, $(addsuffix  $(SUFFIX_SIMD_DOUBLE).o, $(NAMES_ACCESS) $(NAMES_SIMD)))
 
 LOBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.lo, $(NAMES))) \
 	       $(addprefix $(ODIR)/, $(addsuffix  $(SUFFIX_SIMD_DOUBLE).lo, $(NAMES_ACCESS) $(NAMES_SIMD)))
+else
 
-#OBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES))) \
-#	     $(addprefix $(ODIR)/, $(addsuffix _float.o, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
-#
-#LOBJS_FLOAT = $(addprefix $(ODIR)/, $(addsuffix _float.lo, $(NAMES))) \
-#	      $(addprefix $(ODIR)/, $(addsuffix _float.lo, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
-#
-#OBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.o, $(NAMES))) \
-#	      $(addprefix $(ODIR)/, $(addsuffix _double.o, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
-#
-#LOBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.lo, $(NAMES))) \
-#	       $(addprefix $(ODIR)/, $(addsuffix _double.lo, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
+OBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.o, $(NAMES))) \
+	      $(addprefix $(ODIR)/, $(addsuffix _double.o, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
+
+LOBJS_DOUBLE = $(addprefix $(ODIR)/, $(addsuffix _double.lo, $(NAMES))) \
+	       $(addprefix $(ODIR)/, $(addsuffix _double.lo, $(NAMES_ACCESS) $(NAMES_NOSIMD)))
+
+endif
 
 
 $(OBJS_FLOAT) $(OBJS_DOUBLE): fmmv_sys.h fmmv_access.h 

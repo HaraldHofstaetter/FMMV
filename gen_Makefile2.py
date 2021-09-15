@@ -19,6 +19,10 @@ for float_type in float_types:
     print "SUFFIX_SIMD_%s = %s_%s" % (float_type.upper(), simd_suffix[simd_vector_length[float_type]], float_type)
 print    
 
+for float_type in float_types:
+    print "_USE_SIMD_%s_ = %s" % (float_type.upper(), "1" if simd_vector_length[float_type]>1 else "0")
+print    
+
 print "NAMES_ACCESS = \\"
 for (driver_suf, subset) in drivers:
     charge_pot_combs =  {x: charge_pot_combs0[x] for x in subset}
